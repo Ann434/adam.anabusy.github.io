@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ليونيل ميسي | أسطورة كرة القدم</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Tahoma, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+            line-height: 1.8;
+        }
+
+        header {
+            background: linear-gradient(135deg, #061b4f, #0876c9);
+            color: white;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            font-size: 26px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #ffd700;
+        }
+
+        .hero {
+            min-height: 600px;
+            background:
+                linear-gradient(rgba(0, 25, 70, .7), rgba(0, 25, 70, .8)),
+                url("https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1600&q=80")
+                center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero h2 {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 22px;
+            margin-bottom: 30px;
+        }
+
+        .button {
+            display: inline-block;
+            background: #ffd700;
+            color: #111;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        section {
+            padding: 70px 8%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            color: #06245c;
+            margin-bottom: 40px;
+        }
+
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .about img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.15);
+        }
+
+        .about-text h3 {
+            font-size: 30px;
+            margin-bottom: 15px;
+            color: #0876c9;
+        }
+
+        .stats {
+            background: #061b4f;
+            color: white;
+        }
+
+        .stats .section-title {
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat {
+            background: rgba(255,255,255,.1);
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+        }
+
+        .stat h3 {
+            font-size: 40px;
+            color: #ffd700;
+        }
+
+        .stat p {
+            font-size: 18px;
+        }
+
+        .trophies {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,.08);
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+        }
+
+        .card .icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #06245c;
+            margin-bottom: 10px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: .3s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.03);
+        }
+
+        .quote {
+            background: linear-gradient(135deg, #0876c9, #061b4f);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .quote p {
+            font-size: 30px;
+            max-width: 900px;
+            margin: auto;
+            font-weight: bold;
+        }
+
+        footer {
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        @media (max-width: 800px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav a {
+                font-size: 14px;
+                margin: 4px;
+            }
+
+            .hero h2 {
+                font-size: 40px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .about {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .trophies,
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>⚽ ميسي</h1>
+
+    <nav>
+        <a href="#about">من هو؟</a>
+        <a href="#stats">الأرقام</a>
+        <a href="#trophies">البطولات</a>
+        <a href="#gallery">الصور</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h2>ليونيل ميسي</h2>
+        <p>
+            أحد أعظم لاعبي كرة القدم في تاريخ اللعبة
+        </p>
+
+        <a class="button" href="#about">اكتشف مسيرته</a>
+    </div>
+</section>
+
+<section id="about">
+    <h2 class="section-title">من هو ليونيل ميسي؟</h2>
+
+    <div class="about">
+        <img
+            src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1000&q=80"
+            alt="كرة القدم">
+
+        <div class="about-text">
+            <h3>البرغوث الأرجنتيني 🐐</h3>
+
+            <p>
+                ليونيل أندريس ميسي لاعب كرة قدم أرجنتيني،
+                اشتهر بمهاراته الاستثنائية في المراوغة وصناعة
+                الفرص وتسجيل الأهداف.
+            </p>
+
+            <br>
+
+            <p>
+                قضى الجزء الأكبر من مسيرته الأوروبية مع نادي
+                برشلونة، وحقق معه العديد من الألقاب والإنجازات
+                الفردية والجماعية.
+            </p>
+
+            <br>
+
+            <p>
+                كما قاد منتخب الأرجنتين إلى الفوز بكأس العالم
+                2022، ليضيف واحدة من أهم البطولات إلى مسيرته.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section id="stats" class="stats">
+
+    <h2 class="section-title">أرقام وإنجازات</h2>
+
+    <div class="stats-grid">
+
+        <div class="stat">
+            <h3>8</h3>
+            <p>كرات ذهبية</p>
+        </div>
+
+        <div class="stat">
+            <h3>4</h3>
+            <p>دوري أبطال أوروبا</p>
+        </div>
+
+        <div class="stat">
+            <h3>1</h3>
+            <p>كأس عالم</p>
+        </div>
+
+        <div class="stat">
+            <h3>7</h3>
+            <p>كؤوس كوبا أمريكا</p>
+        </div>
+
+    </div>
+
+</section>
+
+<section id="trophies">
+
+    <h2 class="section-title">أهم البطولات</h2>
+
+    <div class="trophies">
+
+        <div class="card">
+            <div class="icon">🏆</div>
+            <h3>كأس العالم</h3>
+            <p>
+                حقق ميسي كأس العالم مع الأرجنتين
+                في قطر عام 2022.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="icon">🌎</div>
+            <h3>كوبا أمريكا</h3>
+            <p>
+                قاد منتخب الأرجنتين للفوز بكوبا أمريكا
+                وتحقيق لقب قاري مهم.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="icon">⭐</div>
+            <h3>الكرة الذهبية</h3>
+            <p>
+                حصل ميسي على جائزة الكرة الذهبية
+                عدة مرات خلال مسيرته.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="icon">🔵🔴</div>
+            <h3>برشلونة</h3>
+            <p>
+                حقق العديد من البطولات مع نادي برشلونة
+                وأصبح أحد أبرز لاعبيه تاريخياً.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="icon">🇦🇷</div>
+            <h3>الأرجنتين</h3>
+            <p>
+                أصبح ميسي أحد أهم رموز المنتخب
+                الأرجنتيني عبر التاريخ.
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="icon">🥇</div>
+            <h3>ألقاب فردية</h3>
+            <p>
+                يمتلك سجلاً استثنائياً من الجوائز
+                والأرقام الفردية.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+<section id="gallery">
+
+    <h2 class="section-title">معرض الصور</h2>
+
+    <div class="gallery">
+
+        <img
+            src="https://images.unsplash.com/photo-1553778263-73a83bab9b0c?auto=format&fit=crop&w=800&q=80"
+            alt="كرة القدم">
+
+        <img
+            src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=800&q=80"
+            alt="ملعب كرة القدم">
+
+        <img
+            src="https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=800&q=80"
+            alt="مباراة كرة القدم">
+
+    </div>
+
+</section>
+
+<section class="quote">
+
+    <p>
+        "الموهبة لا تكفي وحدها، يجب أن تعمل بجد
+        لتحقيق أحلامك."
+    </p>
+
+</section>
+
+<footer>
+
+    <p>⚽ موقع تعريفي عن ليونيل ميسي</p>
+    <p>صُمم باستخدام HTML & CSS</p>
+
+</footer>
+
+</body>
+</html>

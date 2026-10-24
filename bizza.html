@@ -1,0 +1,775 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🍕 بيتزا الكسور</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Tahoma, sans-serif;
+    background: linear-gradient(135deg, #ffcc70, #ff8177);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game {
+    width: 95%;
+    max-width: 700px;
+    background: white;
+    padding: 25px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1 {
+    color: #e65100;
+    font-size: 38px;
+    margin: 5px 0 20px;
+}
+
+.info {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.info div {
+    background: #fff3e0;
+    padding: 12px 20px;
+    border-radius: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.question {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 25px 0;
+}
+
+/* =========================
+   البيتزا
+========================= */
+
+.pizza {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    margin: 20px auto;
+    position: relative;
+    overflow: hidden;
+
+    background: conic-gradient(
+        #f4b942 0deg 180deg,
+        #eeeeee 180deg 360deg
+    );
+
+    border: 10px solid #a95000;
+
+    box-shadow:
+        0 8px 15px rgba(0,0,0,0.3),
+        inset 0 0 0 5px #ffd166;
+}
+
+/* طبقة تقسيم البيتزا */
+.pizza-lines {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+}
+
+/* خطوط البيتزا */
+.line {
+    position: absolute;
+    width: 50%;
+    height: 3px;
+    background: white;
+    top: 50%;
+    left: 50%;
+    transform-origin: left center;
+    z-index: 5;
+}
+
+/* ببروني */
+.pepperoni {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #d62828;
+    border: 2px solid #9d1c1c;
+    z-index: 6;
+}
+
+/* =========================
+   الإجابات
+========================= */
+
+.answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.answer {
+    border: none;
+    border-radius: 15px;
+    padding: 18px;
+    background: #2196f3;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.answer:hover {
+    background: #1976d2;
+    transform: scale(1.03);
+}
+
+.answer.correct {
+    background: #2e7d32 !important;
+}
+
+.answer.wrong {
+    background: #c62828 !important;
+}
+
+.answer:disabled {
+    cursor: default;
+}
+
+/* =========================
+   الرسالة
+========================= */
+
+.message {
+    min-height: 40px;
+    margin: 20px;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+/* =========================
+   الأزرار
+========================= */
+
+.next,
+.restart {
+    display: none;
+    width: 80%;
+    margin: 20px auto;
+    padding: 16px;
+    border: none;
+    border-radius: 15px;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.next {
+    background: #e65100;
+}
+
+.next:hover {
+    background: #bf360c;
+}
+
+.restart {
+    background: #673ab7;
+}
+
+.restart:hover {
+    background: #512da8;
+}
+
+.rules {
+    background: #f5f5f5;
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 17px;
+}
+
+/* الهاتف */
+@media(max-width: 550px) {
+
+    h1 {
+        font-size: 30px;
+    }
+
+    .pizza {
+        width: 240px;
+        height: 240px;
+    }
+
+    .answers {
+        grid-template-columns: 1fr;
+    }
+
+    .question {
+        font-size: 20px;
+    }
+
+    .answer {
+        font-size: 21px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>🍕 بيتزا الكسور</h1>
+
+    <div class="info">
+
+        <div>
+            🏠 الطابق:
+            <span id="level">1</span> / 20
+        </div>
+
+        <div>
+            ⭐ النقاط:
+            <span id="score">0</span>
+        </div>
+
+    </div>
+
+    <div class="question" id="question">
+        ما الكسر الذي يمثل الجزء الملون؟
+    </div>
+
+    <div class="pizza" id="pizza"></div>
+
+    <div class="message" id="message"></div>
+
+    <div class="answers" id="answers"></div>
+
+    <button class="next" id="next">
+        ➡️ الطابق التالي
+    </button>
+
+    <button class="restart" id="restart">
+        🔄 العب من جديد
+    </button>
+
+    <div class="rules">
+        🍕 انظر إلى البيتزا واحسب الأجزاء الملونة،
+        ثم اختر الكسر الصحيح من بين 4 إجابات.
+    </div>
+
+</div>
+
+<script>
+
+/* ===================================
+   بيانات الطوابق
+=================================== */
+
+const levels = [
+
+    {parts: 2, filled: 1},
+    {parts: 3, filled: 1},
+    {parts: 3, filled: 2},
+    {parts: 4, filled: 1},
+    {parts: 4, filled: 3},
+    {parts: 5, filled: 2},
+    {parts: 5, filled: 4},
+    {parts: 6, filled: 1},
+    {parts: 6, filled: 5},
+    {parts: 8, filled: 2},
+    {parts: 8, filled: 3},
+    {parts: 8, filled: 5},
+    {parts: 8, filled: 7},
+    {parts: 10, filled: 3},
+    {parts: 10, filled: 7},
+    {parts: 12, filled: 1},
+    {parts: 12, filled: 5},
+    {parts: 12, filled: 7},
+    {parts: 12, filled: 9},
+    {parts: 12, filled: 11}
+
+];
+
+
+/* ===================================
+   متغيرات اللعبة
+=================================== */
+
+let currentLevel = 0;
+let score = 0;
+let answered = false;
+let correctAnswer = "";
+
+
+/* ===================================
+   عناصر الصفحة
+=================================== */
+
+const pizza = document.getElementById("pizza");
+const answersBox = document.getElementById("answers");
+const message = document.getElementById("message");
+const levelText = document.getElementById("level");
+const scoreText = document.getElementById("score");
+const nextButton = document.getElementById("next");
+const restartButton = document.getElementById("restart");
+
+
+/* ===================================
+   إنشاء البيتزا
+=================================== */
+
+function drawPizza(parts, filled) {
+
+    pizza.innerHTML = "";
+
+    /*
+       conic-gradient يرسم البيتزا
+       حسب عدد الأجزاء.
+    */
+
+    let colors = [];
+
+    for (let i = 0; i < parts; i++) {
+
+        if (i < filled) {
+            colors.push("#f4b942");
+        } else {
+            colors.push("#eeeeee");
+        }
+
+    }
+
+    let degrees = 360 / parts;
+
+    let gradient = "";
+
+    for (let i = 0; i < parts; i++) {
+
+        let start = i * degrees;
+        let end = (i + 1) * degrees;
+
+        gradient +=
+            colors[i] +
+            " " +
+            start +
+            "deg " +
+            end +
+            "deg";
+
+        if (i < parts - 1) {
+            gradient += ", ";
+        }
+
+    }
+
+    pizza.style.background =
+        "conic-gradient(" + gradient + ")";
+
+
+    /*
+       خطوط تقسيم البيتزا
+    */
+
+    for (let i = 0; i < parts; i++) {
+
+        const line = document.createElement("div");
+
+        line.className = "line";
+
+        line.style.transform =
+            "rotate(" +
+            (i * degrees) +
+            "deg)";
+
+        pizza.appendChild(line);
+
+    }
+
+
+    /*
+       إضافة الببروني
+    */
+
+    const positions = [
+
+        [105, 60],
+        [160, 90],
+        [70, 110],
+        [180, 155],
+        [110, 170],
+        [55, 160],
+        [205, 105],
+        [135, 45]
+
+    ];
+
+    positions.forEach(function(pos) {
+
+        const p = document.createElement("div");
+
+        p.className = "pepperoni";
+
+        p.style.left = pos[0] + "px";
+        p.style.top = pos[1] + "px";
+
+        pizza.appendChild(p);
+
+    });
+
+}
+
+
+/* ===================================
+   إنشاء نص الكسر
+=================================== */
+
+function fraction(a, b) {
+
+    return a + " / " + b;
+
+}
+
+
+/* ===================================
+   إنشاء 4 إجابات
+=================================== */
+
+function createAnswers(parts, filled) {
+
+    correctAnswer = fraction(filled, parts);
+
+    let answers = [];
+
+    /*
+       الإجابة الصحيحة
+    */
+
+    answers.push(correctAnswer);
+
+
+    /*
+       إجابات خاطئة
+    */
+
+    let wrongNumbers = [];
+
+    for (let i = 1; i <= parts; i++) {
+
+        if (i !== filled) {
+            wrongNumbers.push(i);
+        }
+
+    }
+
+
+    /*
+       خلط الأرقام الخاطئة
+    */
+
+    wrongNumbers.sort(function() {
+        return Math.random() - 0.5;
+    });
+
+
+    /*
+       إضافة 3 إجابات خاطئة
+    */
+
+    for (let i = 0; i < wrongNumbers.length && answers.length < 4; i++) {
+
+        answers.push(
+            fraction(wrongNumbers[i], parts)
+        );
+
+    }
+
+
+    /*
+       خلط الإجابات
+    */
+
+    answers.sort(function() {
+        return Math.random() - 0.5;
+    });
+
+
+    return answers;
+
+}
+
+
+/* ===================================
+   تحميل المستوى
+=================================== */
+
+function loadLevel() {
+
+    answered = false;
+
+    message.textContent = "";
+
+    nextButton.style.display = "none";
+
+    restartButton.style.display = "none";
+
+    answersBox.innerHTML = "";
+
+
+    const data = levels[currentLevel];
+
+
+    levelText.textContent =
+        currentLevel + 1;
+
+    scoreText.textContent =
+        score;
+
+
+    /*
+       رسم البيتزا
+    */
+
+    drawPizza(
+        data.parts,
+        data.filled
+    );
+
+
+    /*
+       إنشاء الإجابات
+    */
+
+    const answers =
+        createAnswers(
+            data.parts,
+            data.filled
+        );
+
+
+    answers.forEach(function(answer) {
+
+        const button =
+            document.createElement("button");
+
+        button.className = "answer";
+
+        button.textContent = answer;
+
+        button.addEventListener(
+            "click",
+            function() {
+
+                checkAnswer(
+                    button,
+                    answer
+                );
+
+            }
+        );
+
+        answersBox.appendChild(button);
+
+    });
+
+}
+
+
+/* ===================================
+   فحص الإجابة
+=================================== */
+
+function checkAnswer(button, answer) {
+
+    if (answered) {
+        return;
+    }
+
+    answered = true;
+
+
+    const buttons =
+        document.querySelectorAll(".answer");
+
+
+    /*
+       إظهار الإجابة الصحيحة
+    */
+
+    buttons.forEach(function(btn) {
+
+        btn.disabled = true;
+
+        if (btn.textContent === correctAnswer) {
+
+            btn.classList.add("correct");
+
+        }
+
+    });
+
+
+    /*
+       إجابة صحيحة
+    */
+
+    if (answer === correctAnswer) {
+
+        score += 10;
+
+        scoreText.textContent = score;
+
+        message.textContent =
+            "🎉 ممتاز! إجابة صحيحة +10 نقاط";
+
+        button.classList.add("correct");
+
+    }
+
+
+    /*
+       إجابة خاطئة
+    */
+
+    else {
+
+        button.classList.add("wrong");
+
+        message.textContent =
+            "❌ خطأ! الإجابة الصحيحة هي " +
+            correctAnswer;
+
+    }
+
+
+    /*
+       إظهار زر التالي
+    */
+
+    if (currentLevel < levels.length - 1) {
+
+        nextButton.style.display =
+            "block";
+
+    } else {
+
+        finishGame();
+
+    }
+
+}
+
+
+/* ===================================
+   المستوى التالي
+=================================== */
+
+nextButton.addEventListener(
+    "click",
+    function() {
+
+        currentLevel++;
+
+        loadLevel();
+
+    }
+);
+
+
+/* ===================================
+   نهاية اللعبة
+=================================== */
+
+function finishGame() {
+
+    document.getElementById("question").textContent =
+        "🏆 مبروك! أنهيت جميع الطوابق!";
+
+
+    message.textContent =
+        "⭐ نتيجتك النهائية: " +
+        score +
+        " / " +
+        (levels.length * 10);
+
+
+    answersBox.innerHTML = "";
+
+    pizza.innerHTML = "🍕";
+
+    pizza.style.background =
+        "#f4b942";
+
+    pizza.style.display =
+        "flex";
+
+    pizza.style.alignItems =
+        "center";
+
+    pizza.style.justifyContent =
+        "center";
+
+    pizza.style.fontSize =
+        "120px";
+
+
+    nextButton.style.display =
+        "none";
+
+    restartButton.style.display =
+        "block";
+
+}
+
+
+/* ===================================
+   إعادة اللعبة
+=================================== */
+
+restartButton.addEventListener(
+    "click",
+    function() {
+
+        currentLevel = 0;
+
+        score = 0;
+
+        pizza.style.display =
+            "block";
+
+        pizza.style.fontSize =
+            "";
+
+        loadLevel();
+
+    }
+);
+
+
+/* ===================================
+   بدء اللعبة
+=================================== */
+
+loadLevel();
+
+</script>
+
+</body>
+</html>

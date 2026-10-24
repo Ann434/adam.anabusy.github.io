@@ -1,0 +1,890 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧩 لعبة سودوكو - 4 طوابق ادهم</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #172554, #2563eb);
+    min-height: 100vh;
+    color: white;
+    text-align: center;
+}
+
+/* العنوان */
+header {
+    padding: 25px 10px 10px;
+}
+
+h1 {
+    margin: 5px;
+    font-size: 42px;
+}
+
+.subtitle {
+    font-size: 18px;
+    opacity: .9;
+}
+
+/* مساحة الإعلان */
+.ad-box {
+    width: min(95%, 728px);
+    min-height: 90px;
+    margin: 15px auto;
+    background: rgba(255,255,255,.95);
+    color: #64748b;
+    border: 2px dashed #94a3b8;
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 16px;
+}
+
+/* اللعبة */
+.game {
+    width: min(95%, 550px);
+    margin: 15px auto 40px;
+    background: rgba(255,255,255,.12);
+    padding: 20px;
+    border-radius: 25px;
+    box-shadow: 0 10px 35px rgba(0,0,0,.3);
+    backdrop-filter: blur(8px);
+}
+
+.info {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.box {
+    background: white;
+    color: #172554;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: bold;
+    min-width: 120px;
+}
+
+.floor-title {
+    color: #fde68a;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+/* لوحة السودوكو */
+#board {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    width: min(100%, 450px);
+    aspect-ratio: 1;
+    margin: auto;
+    background: #111827;
+    border: 4px solid white;
+}
+
+.cell {
+    border: 1px solid #64748b;
+    background: #f8fafc;
+    color: #172554;
+    font-size: clamp(18px, 5vw, 30px);
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    user-select: none;
+}
+
+.cell.fixed {
+    background: #cbd5e1;
+    cursor: default;
+}
+
+.cell.selected {
+    background: #bfdbfe;
+}
+
+/* خطوط مربعات السودوكو */
+.cell:nth-child(3n) {
+    border-left: 3px solid #111827;
+}
+
+.cell:nth-child(9n) {
+    border-left: none;
+}
+
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54) {
+    border-bottom: 3px solid #111827;
+}
+
+/* أزرار الأرقام */
+.numbers {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 6px;
+    margin-top: 18px;
+}
+
+.num {
+    border: none;
+    padding: 12px 5px;
+    border-radius: 10px;
+
+    background: white;
+    color: #172554;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.num:hover {
+    transform: scale(1.05);
+    background: #dbeafe;
+}
+
+/* أزرار التحكم */
+button.action {
+    border: none;
+    padding: 12px 20px;
+    margin: 10px 5px;
+
+    border-radius: 12px;
+
+    background: #fbbf24;
+    color: #111827;
+
+    font-size: 17px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+button.action:hover {
+    background: #f59e0b;
+}
+
+#message {
+    min-height: 30px;
+    margin: 12px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* شاشة الفوز */
+.win {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,.75);
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 10;
+}
+
+.win-box {
+    background: white;
+    color: #172554;
+
+    padding: 35px;
+    border-radius: 25px;
+
+    width: min(90%, 450px);
+
+    box-shadow: 0 10px 40px black;
+}
+
+.win-box h2 {
+    font-size: 32px;
+}
+
+.win-box button {
+    border: none;
+    background: #2563eb;
+    color: white;
+
+    padding: 13px 25px;
+
+    border-radius: 12px;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+/* حركة الخطأ */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+@media(max-width:450px) {
+
+    .game {
+        padding: 12px;
+    }
+
+    .numbers {
+        gap: 3px;
+    }
+
+    .num {
+        padding: 9px 2px;
+    }
+
+    h1 {
+        font-size: 34px;
+    }
+
+    .ad-box {
+        min-height: 70px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ========================= -->
+<!-- الإعلان العلوي -->
+<!-- ========================= -->
+
+<div class="ad-box">
+    📢 مساحة إعلان Google
+</div>
+
+
+<header>
+
+    <h1>🧩 لعبة سودوكو</h1>
+
+    <div class="subtitle">
+        أكمل 4 طوابق لتصبح بطل السودوكو! 🏆
+    </div>
+
+</header>
+
+
+<div class="game">
+
+    <div class="floor-title" id="floorTitle">
+        الطابق الأول
+    </div>
+
+    <div class="info">
+
+        <div class="box">
+            ⭐ النقاط:
+            <span id="score">0</span>
+        </div>
+
+        <div class="box">
+            ❌ الأخطاء:
+            <span id="mistakes">0</span>/5
+        </div>
+
+    </div>
+
+
+    <!-- لوحة السودوكو -->
+
+    <div id="board"></div>
+
+
+    <!-- الأرقام -->
+
+    <div class="numbers">
+
+        <button class="num" onclick="enterNumber(1)">1</button>
+        <button class="num" onclick="enterNumber(2)">2</button>
+        <button class="num" onclick="enterNumber(3)">3</button>
+        <button class="num" onclick="enterNumber(4)">4</button>
+        <button class="num" onclick="enterNumber(5)">5</button>
+        <button class="num" onclick="enterNumber(6)">6</button>
+        <button class="num" onclick="enterNumber(7)">7</button>
+        <button class="num" onclick="enterNumber(8)">8</button>
+        <button class="num" onclick="enterNumber(9)">9</button>
+
+    </div>
+
+
+    <button class="action" onclick="erase()">
+        🗑️ مسح
+    </button>
+
+    <button class="action" onclick="newGame()">
+        🔄 لعبة جديدة
+    </button>
+
+
+    <div id="message"></div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- الإعلان السفلي -->
+<!-- ========================= -->
+
+<div class="ad-box">
+    📢 مساحة إعلان Google
+</div>
+
+
+<!-- شاشة الفوز -->
+
+<div class="win" id="winScreen">
+
+    <div class="win-box">
+
+        <h2>🏆 مبروك!</h2>
+
+        <p>
+            لقد أكملت جميع طوابق السودوكو الأربعة!
+        </p>
+
+        <h3>
+            ⭐ مجموع نقاطك:
+            <span id="finalScore">0</span>
+        </h3>
+
+        <button onclick="newGame()">
+            🔄 العب من جديد
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   ألغاز الطوابق الأربعة
+========================= */
+
+const puzzles = [
+
+    // الطابق الأول
+    [
+        "530070000",
+        "600195000",
+        "098000060",
+        "800060003",
+        "400803001",
+        "700020006",
+        "060000280",
+        "000419005",
+        "000080079"
+    ],
+
+    // الطابق الثاني
+    [
+        "003020600",
+        "900305001",
+        "001806400",
+        "008102900",
+        "700000008",
+        "006708200",
+        "002609500",
+        "800203009",
+        "005010300"
+    ],
+
+    // الطابق الثالث
+    [
+        "200080300",
+        "060070084",
+        "030500209",
+        "000105408",
+        "000000000",
+        "402706000",
+        "301007040",
+        "720040060",
+        "004010003"
+    ],
+
+    // الطابق الرابع
+    [
+        "000260701",
+        "680070090",
+        "190004500",
+        "820100040",
+        "004602900",
+        "050003028",
+        "009300074",
+        "040050036",
+        "703018000"
+    ]
+
+];
+
+
+let floor = 0;
+let solution = [];
+let board = [];
+let selected = -1;
+
+let score = 0;
+let mistakes = 0;
+
+
+/* =========================
+   حل السودوكو
+========================= */
+
+function solveSudoku(grid) {
+
+    for (let r = 0; r < 9; r++) {
+
+        for (let c = 0; c < 9; c++) {
+
+            if (grid[r][c] === 0) {
+
+                for (let n = 1; n <= 9; n++) {
+
+                    if (isSafe(grid, r, c, n)) {
+
+                        grid[r][c] = n;
+
+                        if (solveSudoku(grid))
+                            return true;
+
+                        grid[r][c] = 0;
+                    }
+                }
+
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+
+/* =========================
+   التحقق من الرقم
+========================= */
+
+function isSafe(grid, row, col, num) {
+
+    for (let c = 0; c < 9; c++) {
+
+        if (grid[row][c] === num)
+            return false;
+
+    }
+
+
+    for (let r = 0; r < 9; r++) {
+
+        if (grid[r][col] === num)
+            return false;
+
+    }
+
+
+    let startRow =
+        Math.floor(row / 3) * 3;
+
+    let startCol =
+        Math.floor(col / 3) * 3;
+
+
+    for (
+        let r = startRow;
+        r < startRow + 3;
+        r++
+    ) {
+
+        for (
+            let c = startCol;
+            c < startCol + 3;
+            c++
+        ) {
+
+            if (grid[r][c] === num)
+                return false;
+
+        }
+    }
+
+
+    return true;
+}
+
+
+/* =========================
+   بدء الطابق
+========================= */
+
+function startFloor() {
+
+    let puzzle = puzzles[floor];
+
+
+    board = puzzle.map(row =>
+        row.split("").map(Number)
+    );
+
+
+    let copy =
+        board.map(row => [...row]);
+
+
+    solveSudoku(copy);
+
+
+    solution = copy;
+
+    selected = -1;
+    mistakes = 0;
+
+
+    document.getElementById("floorTitle").textContent =
+        "الطابق " + arabicNumber(floor + 1);
+
+
+    document.getElementById("mistakes").textContent =
+        mistakes;
+
+
+    drawBoard();
+
+
+    document.getElementById("message").textContent =
+        "اختر مربعاً ثم اختر الرقم المناسب 🎯";
+}
+
+
+/* =========================
+   رسم اللوحة
+========================= */
+
+function drawBoard() {
+
+    const boardElement =
+        document.getElementById("board");
+
+
+    boardElement.innerHTML = "";
+
+
+    for (let r = 0; r < 9; r++) {
+
+        for (let c = 0; c < 9; c++) {
+
+            let index =
+                r * 9 + c;
+
+
+            let cell =
+                document.createElement("div");
+
+
+            cell.className = "cell";
+
+
+            /* الأرقام الثابتة */
+
+            if (puzzles[floor][r][c] !== "0") {
+
+                cell.classList.add("fixed");
+
+                cell.textContent =
+                    arabicNumber(board[r][c]);
+
+            }
+
+
+            /* الرقم الذي أدخله اللاعب */
+
+            else if (board[r][c] !== 0) {
+
+                cell.textContent =
+                    arabicNumber(board[r][c]);
+
+            }
+
+
+            /* المربع المحدد */
+
+            if (selected === index) {
+
+                cell.classList.add("selected");
+
+            }
+
+
+            cell.onclick = function() {
+
+                if (
+                    puzzles[floor][r][c] === "0"
+                ) {
+
+                    selected = index;
+
+                    drawBoard();
+
+                }
+
+            };
+
+
+            boardElement.appendChild(cell);
+        }
+    }
+}
+
+
+/* =========================
+   إدخال رقم
+========================= */
+
+function enterNumber(num) {
+
+    if (selected === -1) {
+
+        document.getElementById("message").textContent =
+            "⚠️ اختر مربعاً أولاً!";
+
+        return;
+    }
+
+
+    let r =
+        Math.floor(selected / 9);
+
+    let c =
+        selected % 9;
+
+
+    if (puzzles[floor][r][c] !== "0")
+        return;
+
+
+    if (solution[r][c] === num) {
+
+        board[r][c] = num;
+
+        score += 10;
+
+
+        document.getElementById("score").textContent =
+            score;
+
+
+        document.getElementById("message").textContent =
+            "✅ إجابة صحيحة!";
+
+
+        drawBoard();
+
+        checkWin();
+
+    }
+
+    else {
+
+        mistakes++;
+
+
+        document.getElementById("mistakes").textContent =
+            mistakes;
+
+
+        document.getElementById("message").textContent =
+            "❌ الرقم غير صحيح! حاول مرة أخرى.";
+
+
+        if (mistakes >= 5) {
+
+            document.getElementById("message").textContent =
+                "😢 انتهت المحاولات! سيتم إعادة الطابق.";
+
+
+            setTimeout(() => {
+
+                mistakes = 0;
+
+                startFloor();
+
+            }, 1500);
+
+        }
+    }
+}
+
+
+/* =========================
+   مسح الرقم
+========================= */
+
+function erase() {
+
+    if (selected === -1)
+        return;
+
+
+    let r =
+        Math.floor(selected / 9);
+
+    let c =
+        selected % 9;
+
+
+    if (puzzles[floor][r][c] === "0") {
+
+        board[r][c] = 0;
+
+        drawBoard();
+
+    }
+}
+
+
+/* =========================
+   التحقق من الفوز بالطابق
+========================= */
+
+function checkWin() {
+
+    for (let r = 0; r < 9; r++) {
+
+        for (let c = 0; c < 9; c++) {
+
+            if (
+                board[r][c] !==
+                solution[r][c]
+            ) {
+
+                return;
+
+            }
+        }
+    }
+
+
+    score += 100;
+
+
+    document.getElementById("score").textContent =
+        score;
+
+
+    if (floor < 3) {
+
+        document.getElementById("message").textContent =
+            "🎉 أحسنت! أكملت الطابق! +١٠٠ نقطة";
+
+
+        setTimeout(() => {
+
+            floor++;
+
+            startFloor();
+
+        }, 1800);
+
+    }
+
+    else {
+
+        document.getElementById("finalScore").textContent =
+            arabicNumber(score);
+
+
+        document.getElementById("winScreen").style.display =
+            "flex";
+
+    }
+}
+
+
+/* =========================
+   لعبة جديدة
+========================= */
+
+function newGame() {
+
+    floor = 0;
+
+    score = 0;
+
+    mistakes = 0;
+
+
+    document.getElementById("score").textContent =
+        "0";
+
+
+    document.getElementById("winScreen").style.display =
+        "none";
+
+
+    startFloor();
+}
+
+
+/* =========================
+   تحويل الأرقام إلى عربية
+========================= */
+
+function arabicNumber(number) {
+
+    const nums = [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+    ];
+
+
+    return String(number)
+        .split("")
+        .map(x => nums[x])
+        .join("");
+}
+
+
+/* تشغيل اللعبة */
+
+startFloor();
+
+</script>
+
+</body>
+</html>

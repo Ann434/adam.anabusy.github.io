@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧮 تحدي ترتيب العمليات</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #673ab7, #2196f3);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game {
+    width: 650px;
+    max-width: 94%;
+    background: white;
+    padding: 30px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+}
+
+h1 {
+    margin-top: 0;
+    color: #333;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    background: #f1f1f1;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 18px;
+}
+
+#question {
+    font-size: 38px;
+    font-weight: bold;
+    margin: 35px 0;
+    direction: ltr;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.answer {
+    border: none;
+    padding: 18px;
+    border-radius: 15px;
+    background: #eeeeee;
+    font-size: 25px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.answer:hover {
+    background: #d9e8ff;
+    transform: scale(1.03);
+}
+
+.correct {
+    background: #4caf50 !important;
+    color: white;
+}
+
+.wrong {
+    background: #f44336 !important;
+    color: white;
+}
+
+#message {
+    min-height: 35px;
+    margin: 20px 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#next,
+#restart {
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#next {
+    display: none;
+    background: #673ab7;
+}
+
+#restart {
+    background: #ff9800;
+}
+
+#result {
+    display: none;
+}
+
+#finalScore {
+    font-size: 45px;
+    color: #673ab7;
+    font-weight: bold;
+    margin: 20px;
+}
+
+.tip {
+    color: #666;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+@media(max-width:500px) {
+    .answers {
+        grid-template-columns: 1fr;
+    }
+
+    #question {
+        font-size: 30px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <div id="quiz">
+
+        <h1>🧮 ترتيب العمليات</h1>
+
+        <div class="info">
+            <span>
+                السؤال:
+                <b id="number">1</b> / 15
+            </span>
+
+            <span>
+                ⭐ النقاط:
+                <b id="score">0</b>
+            </span>
+        </div>
+
+        <div id="question">
+            3 + 2 × 4 = ؟
+        </div>
+
+        <div class="answers">
+            <button class="answer" onclick="checkAnswer(0)">11</button>
+            <button class="answer" onclick="checkAnswer(1)">20</button>
+            <button class="answer" onclick="checkAnswer(2)">14</button>
+            <button class="answer" onclick="checkAnswer(3)">9</button>
+        </div>
+
+        <div id="message"></div>
+
+        <button id="next" onclick="nextQuestion()">
+            السؤال التالي ➡️
+        </button>
+
+        <div class="tip">
+            💡 تذكّر: الضرب والقسمة قبل الجمع والطرح
+        </div>
+
+    </div>
+
+    <div id="result">
+
+        <h1>🏆 انتهت اللعبة!</h1>
+
+        <p>نتيجتك:</p>
+
+        <div id="finalScore">0 / 15</div>
+
+        <p id="resultMessage"></p>
+
+        <button id="restart" onclick="restartGame()">
+            🔄 لعب مرة أخرى
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const totalQuestions = 15;
+
+let questions = [];
+let current = 0;
+let score = 0;
+let answered = false;
+
+
+/* إنشاء سؤال */
+function createQuestion() {
+
+    let a = random(2, 12);
+    let b = random(2, 10);
+    let c = random(2, 10);
+
+    let type = random(1, 4);
+
+    let expression;
+    let answer;
+
+    /*
+    السؤال 1:
+    جمع + ضرب
+    */
+
+    if (type === 1) {
+
+        expression = `${a} + ${b} × ${c}`;
+
+        answer = a + (b * c);
+    }
+
+    /*
+    السؤال 2:
+    طرح + ضرب
+    */
+
+    else if (type === 2) {
+
+        expression = `${a} × ${b} - ${c}`;
+
+        answer = (a * b) - c;
+    }
+
+    /*
+    السؤال 3:
+    قوس + ضرب
+    */
+
+    else if (type === 3) {
+
+        expression = `(${a} + ${b}) × ${c}`;
+
+        answer = (a + b) * c;
+    }
+
+    /*
+    السؤال 4:
+    قسمة + جمع
+    */
+
+    else {
+
+        let x = random(2, 10);
+        let divisor = random(2, 5);
+
+        x = x * divisor;
+
+        expression = `${x} ÷ ${divisor} + ${c}`;
+
+        answer = (x / divisor) + c;
+    }
+
+    return {
+        expression: expression,
+        answer: answer
+    };
+}
+
+
+/* رقم عشوائي */
+function random(min, max) {
+
+    return Math.floor(
+        Math.random() * (max - min + 1)
+    ) + min;
+}
+
+
+/* إنشاء الإجابات */
+function createAnswers(correct) {
+
+    let answers = [correct];
+
+    while (answers.length < 4) {
+
+        let wrong;
+
+        let variation = random(1, 3);
+
+        if (variation === 1) {
+            wrong = correct + random(1, 10);
+        }
+
+        else if (variation === 2) {
+            wrong = correct - random(1, 10);
+        }
+
+        else {
+            wrong = random(
+                Math.max(1, correct - 15),
+                correct + 15
+            );
+        }
+
+        if (
+            wrong > 0 &&
+            !answers.includes(wrong)
+        ) {
+            answers.push(wrong);
+        }
+    }
+
+    /* خلط الإجابات */
+
+    answers.sort(() => Math.random() - 0.5);
+
+    return answers;
+}
+
+
+/* إنشاء 15 سؤال */
+function createQuestions() {
+
+    questions = [];
+
+    while (questions.length < totalQuestions) {
+
+        let q = createQuestion();
+
+        if (
+            !questions.some(
+                x => x.expression === q.expression
+            )
+        ) {
+
+            q.answers =
+                createAnswers(q.answer);
+
+            questions.push(q);
+        }
+    }
+}
+
+
+/* عرض السؤال */
+function showQuestion() {
+
+    answered = false;
+
+    let q = questions[current];
+
+    document.getElementById("number")
+        .textContent = current + 1;
+
+    document.getElementById("question")
+        .textContent = q.expression + " = ؟";
+
+    let buttons =
+        document.querySelectorAll(".answer");
+
+    buttons.forEach((button, index) => {
+
+        button.textContent =
+            q.answers[index];
+
+        button.disabled = false;
+
+        button.classList.remove(
+            "correct",
+            "wrong"
+        );
+    });
+
+    document.getElementById("message")
+        .textContent = "";
+
+    document.getElementById("next")
+        .style.display = "none";
+}
+
+
+/* فحص الإجابة */
+function checkAnswer(index) {
+
+    if (answered) return;
+
+    answered = true;
+
+    let q = questions[current];
+
+    let buttons =
+        document.querySelectorAll(".answer");
+
+    let selected =
+        Number(buttons[index].textContent);
+
+
+    /* تلوين الإجابة الصحيحة */
+
+    buttons.forEach(button => {
+
+        if (
+            Number(button.textContent)
+            === q.answer
+        ) {
+            button.classList.add("correct");
+        }
+
+        button.disabled = true;
+    });
+
+
+    if (selected === q.answer) {
+
+        score++;
+
+        document.getElementById("score")
+            .textContent = score;
+
+        document.getElementById("message")
+            .textContent =
+            "✅ إجابة صحيحة! أحسنت 🎉";
+
+    }
+
+    else {
+
+        buttons[index]
+            .classList.add("wrong");
+
+        document.getElementById("message")
+            .textContent =
+            "❌ خطأ! الإجابة الصحيحة هي " +
+            q.answer;
+    }
+
+    document.getElementById("next")
+        .style.display = "inline-block";
+}
+
+
+/* السؤال التالي */
+function nextQuestion() {
+
+    current++;
+
+    if (current >= totalQuestions) {
+
+        showResult();
+
+    } else {
+
+        showQuestion();
+    }
+}
+
+
+/* النتيجة */
+function showResult() {
+
+    document.getElementById("quiz")
+        .style.display = "none";
+
+    document.getElementById("result")
+        .style.display = "block";
+
+    document.getElementById("finalScore")
+        .textContent =
+        score + " / " + totalQuestions;
+
+
+    let text;
+
+    if (score === 15) {
+
+        text =
+            "🏆 مذهل! أنت خبير في ترتيب العمليات!";
+
+    }
+
+    else if (score >= 12) {
+
+        text =
+            "🌟 ممتاز جدًا!";
+
+    }
+
+    else if (score >= 9) {
+
+        text =
+            "👏 أحسنت! نتيجتك رائعة.";
+
+    }
+
+    else if (score >= 6) {
+
+        text =
+            "👍 جيد! استمر في التدريب.";
+
+    }
+
+    else {
+
+        text =
+            "💪 لا تستسلم! حاول مرة أخرى.";
+
+    }
+
+    document.getElementById("resultMessage")
+        .textContent = text;
+}
+
+
+/* إعادة اللعب */
+function restartGame() {
+
+    current = 0;
+    score = 0;
+
+    document.getElementById("score")
+        .textContent = "0";
+
+    document.getElementById("quiz")
+        .style.display = "block";
+
+    document.getElementById("result")
+        .style.display = "none";
+
+    createQuestions();
+
+    showQuestion();
+}
+
+
+/* بدء اللعبة */
+restartGame();
+
+</script>
+
+</body>
+</html>

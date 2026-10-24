@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧠 تحدي الضرب</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #4facfe, #6a5acd);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .game {
+        width: 600px;
+        max-width: 94%;
+        background: white;
+        border-radius: 25px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    h1 {
+        color: #333;
+        margin-top: 0;
+        font-size: 34px;
+    }
+
+    .info {
+        display: flex;
+        justify-content: space-between;
+        background: #f1f3f6;
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-size: 18px;
+        margin-bottom: 25px;
+    }
+
+    #question {
+        font-size: 42px;
+        font-weight: bold;
+        color: #222;
+        margin: 25px 0;
+    }
+
+    .answers {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .answer {
+        border: none;
+        padding: 18px;
+        border-radius: 15px;
+        background: #eeeeee;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .answer:hover {
+        transform: scale(1.04);
+        background: #dfe7ff;
+    }
+
+    .correct {
+        background: #4caf50 !important;
+        color: white;
+    }
+
+    .wrong {
+        background: #f44336 !important;
+        color: white;
+    }
+
+    #message {
+        height: 35px;
+        margin: 20px 0 5px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    #next {
+        display: none;
+        margin-top: 15px;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 12px;
+        background: #6a5acd;
+        color: white;
+        font-size: 19px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    #next:hover {
+        background: #5143b8;
+    }
+
+    #result {
+        display: none;
+    }
+
+    #result h2 {
+        font-size: 32px;
+    }
+
+    #finalScore {
+        font-size: 45px;
+        font-weight: bold;
+        color: #6a5acd;
+        margin: 20px;
+    }
+
+    #restart {
+        border: none;
+        padding: 15px 30px;
+        border-radius: 12px;
+        background: #ff9800;
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    #restart:hover {
+        background: #e68900;
+    }
+
+    @media (max-width: 500px) {
+        .answers {
+            grid-template-columns: 1fr;
+        }
+
+        #question {
+            font-size: 34px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <div id="quiz">
+
+        <h1>🧠 تحدي الضرب ✖️</h1>
+
+        <div class="info">
+            <span>السؤال: <b id="questionNumber">1</b> / 15</span>
+            <span>⭐ النقاط: <b id="score">0</b></span>
+        </div>
+
+        <div id="question">5 × 5 = ؟</div>
+
+        <div class="answers">
+            <button class="answer" onclick="checkAnswer(0)">25</button>
+            <button class="answer" onclick="checkAnswer(1)">20</button>
+            <button class="answer" onclick="checkAnswer(2)">30</button>
+            <button class="answer" onclick="checkAnswer(3)">15</button>
+        </div>
+
+        <div id="message"></div>
+
+        <button id="next" onclick="nextQuestion()">
+            السؤال التالي ➡️
+        </button>
+
+    </div>
+
+    <div id="result">
+
+        <h1>🏆 انتهت اللعبة!</h1>
+
+        <h2>نتيجتك</h2>
+
+        <div id="finalScore">0 / 15</div>
+
+        <p id="resultMessage"></p>
+
+        <button id="restart" onclick="restartGame()">
+            🔄 العب مرة أخرى
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const totalQuestions = 15;
+
+let questions = [];
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+
+/* إنشاء سؤال ضرب */
+function createQuestion() {
+
+    let a = Math.floor(Math.random() * 12) + 1;
+    let b = Math.floor(Math.random() * 12) + 1;
+
+    let correct = a * b;
+
+    let answers = [correct];
+
+    /* إنشاء 3 إجابات خاطئة */
+    while (answers.length < 4) {
+
+        let wrong;
+
+        let type = Math.floor(Math.random() * 3);
+
+        if (type === 0) {
+            wrong = correct + Math.floor(Math.random() * 10) + 1;
+        }
+
+        else if (type === 1) {
+            wrong = correct - Math.floor(Math.random() * 10) - 1;
+        }
+
+        else {
+            wrong = Math.floor(Math.random() * 144) + 1;
+        }
+
+        if (wrong > 0 && !answers.includes(wrong)) {
+            answers.push(wrong);
+        }
+    }
+
+    /* خلط الإجابات */
+    answers.sort(() => Math.random() - 0.5);
+
+    return {
+        text: `${a} × ${b} = ؟`,
+        correct: correct,
+        answers: answers
+    };
+}
+
+
+/* إنشاء 15 سؤالًا */
+function createQuestions() {
+
+    questions = [];
+
+    while (questions.length < totalQuestions) {
+
+        let q = createQuestion();
+
+        /*
+        منع تكرار السؤال
+        */
+        if (!questions.some(x => x.text === q.text)) {
+            questions.push(q);
+        }
+    }
+}
+
+
+/* عرض السؤال */
+function showQuestion() {
+
+    answered = false;
+
+    const q = questions[currentQuestion];
+
+    document.getElementById("question").textContent = q.text;
+
+    document.getElementById("questionNumber").textContent =
+        currentQuestion + 1;
+
+    const buttons =
+        document.querySelectorAll(".answer");
+
+    buttons.forEach((button, index) => {
+
+        button.textContent = q.answers[index];
+
+        button.disabled = false;
+
+        button.classList.remove("correct", "wrong");
+    });
+
+    document.getElementById("message").textContent = "";
+
+    document.getElementById("next").style.display = "none";
+}
+
+
+/* فحص الإجابة */
+function checkAnswer(index) {
+
+    if (answered) return;
+
+    answered = true;
+
+    const q = questions[currentQuestion];
+
+    const buttons =
+        document.querySelectorAll(".answer");
+
+    const selected = Number(buttons[index].textContent);
+
+    /* إظهار الإجابة الصحيحة */
+    buttons.forEach(button => {
+
+        if (Number(button.textContent) === q.correct) {
+            button.classList.add("correct");
+        }
+
+        button.disabled = true;
+    });
+
+
+    if (selected === q.correct) {
+
+        score++;
+
+        document.getElementById("score").textContent = score;
+
+        document.getElementById("message").textContent =
+            "✅ إجابة صحيحة! أحسنت 🎉";
+
+    } else {
+
+        buttons[index].classList.add("wrong");
+
+        document.getElementById("message").textContent =
+            "❌ إجابة خاطئة! حاول في السؤال التالي.";
+    }
+
+    document.getElementById("next").style.display = "inline-block";
+}
+
+
+/* السؤال التالي */
+function nextQuestion() {
+
+    currentQuestion++;
+
+    if (currentQuestion >= totalQuestions) {
+
+        showResult();
+
+    } else {
+
+        showQuestion();
+    }
+}
+
+
+/* إظهار النتيجة */
+function showResult() {
+
+    document.getElementById("quiz").style.display = "none";
+
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("finalScore").textContent =
+        score + " / " + totalQuestions;
+
+
+    let message;
+
+    if (score === 15) {
+        message = "🏆 ممتاز! أجبت عن جميع الأسئلة بشكل صحيح!";
+    }
+
+    else if (score >= 12) {
+        message = "🌟 رائع جدًا! مستواك ممتاز في الضرب!";
+    }
+
+    else if (score >= 9) {
+        message = "👏 أحسنت! نتيجتك جيدة جدًا!";
+    }
+
+    else if (score >= 6) {
+        message = "👍 جيد! استمر في التدريب.";
+    }
+
+    else {
+        message = "💪 لا تستسلم! تدرب أكثر وستصبح أفضل.";
+    }
+
+    document.getElementById("resultMessage").textContent = message;
+}
+
+
+/* إعادة اللعبة */
+function restartGame() {
+
+    currentQuestion = 0;
+    score = 0;
+
+    document.getElementById("score").textContent = "0";
+
+    document.getElementById("quiz").style.display = "block";
+
+    document.getElementById("result").style.display = "none";
+
+    createQuestions();
+
+    showQuestion();
+}
+
+
+/* بدء اللعبة */
+restartGame();
+
+</script>
+
+</body>
+</html>

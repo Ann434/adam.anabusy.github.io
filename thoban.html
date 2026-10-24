@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة الثعبان - نوكيا</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #222;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .phone {
+        width: 380px;
+        background: #777;
+        border: 12px solid #555;
+        border-radius: 35px;
+        padding: 25px 20px;
+        box-shadow: 0 15px 35px #000;
+    }
+
+    h1 {
+        text-align: center;
+        margin: 0 0 15px;
+        color: #222;
+        font-size: 25px;
+    }
+
+    .screen {
+        background: #9bbc0f;
+        border: 8px solid #333;
+        border-radius: 8px;
+        padding: 8px;
+    }
+
+    canvas {
+        display: block;
+        width: 100%;
+        background: #9bbc0f;
+    }
+
+    .score {
+        text-align: center;
+        font-weight: bold;
+        font-size: 20px;
+        margin: 12px;
+        color: #222;
+    }
+
+    button {
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    #start {
+        display: block;
+        margin: 10px auto;
+        padding: 10px 25px;
+        border-radius: 20px;
+        background: #222;
+        color: white;
+    }
+
+    .controls {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(3, 55px);
+        gap: 7px;
+        justify-content: center;
+    }
+
+    .controls button {
+        width: 55px;
+        height: 45px;
+        border-radius: 12px;
+        background: #333;
+        color: white;
+    }
+
+    .up {
+        grid-column: 2;
+    }
+
+    .left {
+        grid-column: 1;
+    }
+
+    .down {
+        grid-column: 2;
+    }
+
+    .right {
+        grid-column: 3;
+        grid-row: 2;
+    }
+
+    .info {
+        text-align: center;
+        margin-top: 15px;
+        color: #222;
+        font-size: 13px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+    <h1>🐍 SNAKE</h1>
+
+    <div class="screen">
+        <canvas id="game" width="300" height="300"></canvas>
+    </div>
+
+    <div class="score">
+        النقاط: <span id="score">0</span>
+    </div>
+
+    <button id="start">ابدأ اللعبة</button>
+
+    <div class="controls">
+        <button class="up" onclick="changeDirection('up')">▲</button>
+        <button class="left" onclick="changeDirection('left')">◀</button>
+        <button class="down" onclick="changeDirection('down')">▼</button>
+        <button class="right" onclick="changeDirection('right')">▶</button>
+    </div>
+
+    <div class="info">
+        استخدم الأسهم في لوحة المفاتيح للتحرك
+    </div>
+
+</div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const grid = 15;
+const size = canvas.width / grid;
+
+let snake;
+let food;
+let direction;
+let nextDirection;
+let score;
+let gameRunning = false;
+let gameLoop;
+
+function startGame() {
+    snake = [
+        {x: 10, y: 10},
+        {x: 9, y: 10},
+        {x: 8, y: 10}
+    ];
+
+    direction = "right";
+    nextDirection = "right";
+    score = 0;
+
+    document.getElementById("score").textContent = score;
+
+    createFood();
+
+    gameRunning = true;
+
+    clearInterval(gameLoop);
+    gameLoop = setInterval(update, 220);
+}
+
+function createFood() {
+    food = {
+        x: Math.floor(Math.random() * grid),
+        y: Math.floor(Math.random() * grid)
+    };
+
+    for (let part of snake) {
+        if (part.x === food.x && part.y === food.y) {
+            createFood();
+            return;
+        }
+    }
+}
+
+function update() {
+
+    direction = nextDirection;
+
+    let head = {
+        x: snake[0].x,
+        y: snake[0].y
+    };
+
+    if (direction === "up") head.y--;
+    if (direction === "down") head.y++;
+    if (direction === "left") head.x--;
+    if (direction === "right") head.x++;
+
+    // الاصطدام بالجدار
+    if (
+        head.x < 0 ||
+        head.x >= grid ||
+        head.y < 0 ||
+        head.y >= grid
+    ) {
+        gameOver();
+        return;
+    }
+
+    // الاصطدام بالثعبان
+    for (let part of snake) {
+        if (head.x === part.x && head.y === part.y) {
+            gameOver();
+            return;
+        }
+    }
+
+    snake.unshift(head);
+
+    // أكل الطعام
+    if (head.x === food.x && head.y === food.y) {
+        score++;
+        document.getElementById("score").textContent = score;
+        createFood();
+    } else {
+        snake.pop();
+    }
+
+    draw();
+}
+
+function draw() {
+
+    // الشاشة
+    ctx.fillStyle = "#9bbc0f";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // خطوط خفيفة
+    ctx.strokeStyle = "#8aa50d";
+
+    for (let i = 0; i <= canvas.width; i += size) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, canvas.height);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(canvas.width, i);
+        ctx.stroke();
+    }
+
+    // الطعام
+    ctx.fillStyle = "#222";
+    ctx.fillRect(
+        food.x * size + 2,
+        food.y * size + 2,
+        size - 4,
+        size - 4
+    );
+
+    // الثعبان
+    snake.forEach((part, index) => {
+
+        ctx.fillStyle = index === 0 ? "#111" : "#333";
+
+        ctx.fillRect(
+            part.x * size + 1,
+            part.y * size + 1,
+            size - 2,
+            size - 2
+        );
+    });
+}
+
+function changeDirection(newDirection) {
+
+    if (!gameRunning) return;
+
+    if (
+        newDirection === "up" &&
+        direction !== "down"
+    ) {
+        nextDirection = "up";
+    }
+
+    if (
+        newDirection === "down" &&
+        direction !== "up"
+    ) {
+        nextDirection = "down";
+    }
+
+    if (
+        newDirection === "left" &&
+        direction !== "right"
+    ) {
+        nextDirection = "left";
+    }
+
+    if (
+        newDirection === "right" &&
+        direction !== "left"
+    ) {
+        nextDirection = "right";
+    }
+}
+
+function gameOver() {
+
+    gameRunning = false;
+    clearInterval(gameLoop);
+
+    setTimeout(() => {
+        alert("انتهت اللعبة! 🐍\nالنقاط: " + score);
+    }, 100);
+}
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "ArrowUp") {
+        changeDirection("up");
+    }
+
+    if (event.key === "ArrowDown") {
+        changeDirection("down");
+    }
+
+    if (event.key === "ArrowLeft") {
+        changeDirection("left");
+    }
+
+    if (event.key === "ArrowRight") {
+        changeDirection("right");
+    }
+
+    if (event.key === "Enter") {
+        startGame();
+    }
+});
+
+document.getElementById("start").addEventListener("click", startGame);
+
+draw();
+</script>
+
+</body>
+</html>

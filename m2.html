@@ -1,0 +1,336 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>لعبة الذاكرة - الطوابق</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    min-height: 100vh;
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    font-size: 40px;
+    margin: 20px;
+}
+
+.info {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+#floor {
+    color: #ffd700;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.board {
+    width: 90%;
+    max-width: 700px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.card {
+    height: 120px;
+    perspective: 800px;
+    cursor: pointer;
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform .5s;
+    transform-style: preserve-3d;
+}
+
+.card.flipped .card-inner,
+.card.matched .card-inner {
+    transform: rotateY(180deg);
+}
+
+.front,
+.back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px #0008;
+}
+
+.front {
+    background: #6c5ce7;
+    font-size: 40px;
+}
+
+.back {
+    background: white;
+    color: black;
+    transform: rotateY(180deg);
+    font-size: 48px;
+}
+
+.matched .back {
+    background: #55efc4;
+}
+
+button {
+    margin: 20px 5px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.next {
+    background: #00cec9;
+    color: white;
+    display: none;
+}
+
+.restart {
+    background: #fdcb6e;
+}
+
+@media (max-width: 600px) {
+    .card {
+        height: 85px;
+    }
+
+    .front {
+        font-size: 28px;
+    }
+
+    .back {
+        font-size: 32px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>🧠 لعبة الذاكرة</h1>
+
+<div class="info">
+    🏢 <span id="floor">الطابق 1</span>
+    <br><br>
+    المحاولات: <span id="moves">0</span>
+    |
+    الأزواج: <span id="pairs">0</span>
+</div>
+
+<div class="board" id="board"></div>
+
+<button class="next" id="nextBtn" onclick="nextFloor()">
+    🚪 الطابق التالي
+</button>
+
+<button class="restart" onclick="restartGame()">
+    🔄 إعادة اللعبة
+</button>
+
+<script>
+
+const allSymbols = [
+    "🍎","🍎",
+    "🍌","🍌",
+    "🍕","🍕",
+    "🚗","🚗",
+    "⚽","⚽",
+    "🚀","🚀",
+    "🐱","🐱",
+    "🌟","🌟",
+    "🍔","🍔",
+    "🐶","🐶",
+    "🎮","🎮",
+    "🎈","🎈",
+    "🍉","🍉",
+    "⭐","⭐",
+    "🦁","🦁",
+    "🐼","🐼",
+    "🍩","🍩"
+];
+
+let floor = 1;
+let moves = 0;
+let pairs = 0;
+let totalPairs = 4;
+
+let firstCard = null;
+let secondCard = null;
+let lockBoard = false;
+
+const board = document.getElementById("board");
+const floorText = document.getElementById("floor");
+const movesText = document.getElementById("moves");
+const pairsText = document.getElementById("pairs");
+const nextBtn = document.getElementById("nextBtn");
+
+function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+function startFloor() {
+
+    board.innerHTML = "";
+
+    moves = 0;
+    pairs = 0;
+    firstCard = null;
+    secondCard = null;
+    lockBoard = false;
+
+    movesText.textContent = moves;
+    pairsText.textContent = pairs;
+
+    floorText.textContent = "الطابق " + floor;
+
+    nextBtn.style.display = "none";
+
+    // كل طابق يضيف أزواجًا جديدة
+    totalPairs = Math.min(4 + floor - 1, 16);
+
+    let symbols = allSymbols.slice(0, totalPairs * 2);
+    symbols = shuffle(symbols);
+
+    // تغيير عدد الأعمدة في الطوابق العالية
+    if (totalPairs > 6) {
+        board.style.gridTemplateColumns = "repeat(4, 1fr)";
+    }
+
+    symbols.forEach(symbol => {
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <div class="card-inner">
+                <div class="front">❓</div>
+                <div class="back">${symbol}</div>
+            </div>
+        `;
+
+        card.dataset.symbol = symbol;
+
+        card.onclick = () => flipCard(card);
+
+        board.appendChild(card);
+    });
+}
+
+function flipCard(card) {
+
+    if (lockBoard) return;
+    if (card === firstCard) return;
+    if (card.classList.contains("matched")) return;
+
+    card.classList.add("flipped");
+
+    if (firstCard === null) {
+        firstCard = card;
+        return;
+    }
+
+    secondCard = card;
+
+    moves++;
+    movesText.textContent = moves;
+
+    checkMatch();
+}
+
+function checkMatch() {
+
+    if (firstCard.dataset.symbol === secondCard.dataset.symbol) {
+
+        firstCard.classList.add("matched");
+        secondCard.classList.add("matched");
+
+        pairs++;
+        pairsText.textContent = pairs;
+
+        resetCards();
+
+        if (pairs === totalPairs) {
+            setTimeout(() => {
+
+                if (floor < 10) {
+                    alert(
+                        "🎉 أحسنت!\n\n" +
+                        "أنهيت الطابق " + floor +
+                        " 🏢"
+                    );
+
+                    nextBtn.style.display = "inline-block";
+
+                } else {
+                    alert("🏆🏆🏆 مبروك!\nلقد أنهيت جميع الطوابق!");
+                }
+
+            }, 400);
+        }
+
+    } else {
+
+        lockBoard = true;
+
+        setTimeout(() => {
+
+            firstCard.classList.remove("flipped");
+            secondCard.classList.remove("flipped");
+
+            resetCards();
+
+        }, 900);
+    }
+}
+
+function resetCards() {
+    firstCard = null;
+    secondCard = null;
+    lockBoard = false;
+}
+
+function nextFloor() {
+
+    if (floor < 10) {
+        floor++;
+        startFloor();
+    }
+}
+
+function restartGame() {
+
+    floor = 1;
+    startFloor();
+}
+
+startFloor();
+
+</script>
+
+</body>
+</html>

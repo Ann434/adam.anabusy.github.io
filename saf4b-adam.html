@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة الجمع والطرح - 20 طابق</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #2196f3, #673ab7);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game {
+    width: 95%;
+    max-width: 700px;
+    background: white;
+    padding: 25px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1 {
+    color: #1565c0;
+    margin-top: 0;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    background: #e3f2fd;
+    padding: 15px;
+    border-radius: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.floor {
+    margin: 20px;
+    font-size: 25px;
+    color: #f57c00;
+    font-weight: bold;
+}
+
+.question {
+    direction: ltr;
+    font-size: 48px;
+    font-weight: bold;
+    margin: 30px 0;
+    color: #222;
+    letter-spacing: 3px;
+}
+
+/* شريط التقدم */
+.progress {
+    width: 100%;
+    height: 16px;
+    background: #ddd;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.progress-bar {
+    width: 5%;
+    height: 100%;
+    background: #4caf50;
+    transition: 0.4s;
+}
+
+/* الإجابات الأربعة */
+.answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.answer {
+    height: 80px;
+    border: 3px solid #1976d2;
+    border-radius: 18px;
+    background: #e3f2fd;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.answer:hover {
+    transform: scale(1.05);
+    background: #bbdefb;
+}
+
+.answer:disabled {
+    cursor: default;
+}
+
+.correct {
+    background: #4caf50 !important;
+    color: white;
+    border-color: #2e7d32;
+}
+
+.wrong {
+    background: #f44336 !important;
+    color: white;
+    border-color: #c62828;
+}
+
+#message {
+    min-height: 40px;
+    margin: 20px 0;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.next,
+.restart {
+    display: none;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 15px;
+    background: #1565c0;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.next:hover,
+.restart:hover {
+    background: #0d47a1;
+}
+
+.win {
+    color: #4caf50;
+    font-size: 28px;
+    line-height: 1.8;
+    font-weight: bold;
+}
+
+@media (max-width: 500px) {
+    .question {
+        font-size: 36px;
+    }
+
+    .answer {
+        height: 70px;
+        font-size: 22px;
+    }
+
+    .info {
+        font-size: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>🧮 لعبة الجمع والطرح</h1>
+
+    <div class="info">
+        <span>⭐ النقاط: <span id="score">0</span></span>
+        <span>🏢 الطابق: <span id="floor">1</span> / 20</span>
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar" id="progress"></div>
+    </div>
+
+    <div class="floor">
+        🏢 الطابق <span id="floorText">1</span>
+    </div>
+
+    <div class="question" id="question"></div>
+
+    <div class="answers" id="answers"></div>
+
+    <div id="message"></div>
+
+    <button class="next" id="nextBtn" onclick="nextFloor()">
+        الطابق التالي ➡️
+    </button>
+
+    <button class="restart" id="restartBtn" onclick="restartGame()">
+        🔄 العب مرة أخرى
+    </button>
+
+</div>
+
+<script>
+
+let floor = 1;
+let score = 0;
+let correctAnswer = 0;
+let answered = false;
+
+
+/* عناصر الصفحة */
+const question = document.getElementById("question");
+const answers = document.getElementById("answers");
+const message = document.getElementById("message");
+const scoreElement = document.getElementById("score");
+const floorElement = document.getElementById("floor");
+const floorText = document.getElementById("floorText");
+const progress = document.getElementById("progress");
+const nextBtn = document.getElementById("nextBtn");
+const restartBtn = document.getElementById("restartBtn");
+
+
+/* رقم عشوائي من 4 منازل */
+function fourDigitNumber() {
+    return Math.floor(Math.random() * 9000) + 1000;
+}
+
+
+/* إنشاء سؤال */
+function createQuestion() {
+
+    answered = false;
+
+    message.textContent = "";
+
+    nextBtn.style.display = "none";
+
+    answers.innerHTML = "";
+
+    let num1 = fourDigitNumber();
+    let num2 = fourDigitNumber();
+
+    let operation;
+
+    /* جمع أو طرح عشوائي */
+    if (Math.random() < 0.5) {
+        operation = "+";
+    } else {
+        operation = "-";
+    }
+
+    /* منع النتيجة السالبة في الطرح */
+    if (operation === "-" && num2 > num1) {
+        let temp = num1;
+        num1 = num2;
+        num2 = temp;
+    }
+
+    /* حساب الإجابة */
+    if (operation === "+") {
+        correctAnswer = num1 + num2;
+    } else {
+        correctAnswer = num1 - num2;
+    }
+
+    /* عرض السؤال */
+    question.textContent =
+        num1 + " " + operation + " " + num2 + " = ؟";
+
+    createAnswers();
+}
+
+
+/* إنشاء 4 إجابات */
+function createAnswers() {
+
+    let options = [];
+
+    /* الإجابة الصحيحة */
+    options.push(correctAnswer);
+
+    /* 3 إجابات خاطئة */
+    while (options.length < 4) {
+
+        let difference =
+            Math.floor(Math.random() * 100) + 1;
+
+        let wrongAnswer;
+
+        if (Math.random() < 0.5) {
+            wrongAnswer = correctAnswer + difference;
+        } else {
+            wrongAnswer = correctAnswer - difference;
+        }
+
+        if (
+            wrongAnswer >= 0 &&
+            !options.includes(wrongAnswer)
+        ) {
+            options.push(wrongAnswer);
+        }
+    }
+
+    /* خلط الإجابات */
+    options.sort(() => Math.random() - 0.5);
+
+    /* إنشاء الأزرار */
+    options.forEach(answer => {
+
+        let button = document.createElement("button");
+
+        button.className = "answer";
+
+        button.textContent = answer;
+
+        button.onclick = function() {
+            checkAnswer(button, answer);
+        };
+
+        answers.appendChild(button);
+    });
+}
+
+
+/* فحص الإجابة */
+function checkAnswer(button, answer) {
+
+    if (answered) return;
+
+    answered = true;
+
+    let buttons =
+        document.querySelectorAll(".answer");
+
+    /* إيقاف جميع الأزرار */
+    buttons.forEach(btn => {
+
+        btn.disabled = true;
+
+        /* إظهار الإجابة الصحيحة */
+        if (Number(btn.textContent) === correctAnswer) {
+            btn.classList.add("correct");
+        }
+    });
+
+    /* إجابة صحيحة */
+    if (answer === correctAnswer) {
+
+        button.classList.add("correct");
+
+        score += 10;
+
+        scoreElement.textContent = score;
+
+        message.textContent =
+            "🎉 إجابة صحيحة! +10 نقاط";
+
+        message.style.color = "#4caf50";
+
+    } else {
+
+        /* إجابة خاطئة */
+        button.classList.add("wrong");
+
+        message.textContent =
+            "❌ إجابة خاطئة! الإجابة الصحيحة هي: "
+            + correctAnswer;
+
+        message.style.color = "#f44336";
+    }
+
+    /* إذا كان الطابق 20 */
+    if (floor === 20) {
+
+        finishGame();
+
+    } else {
+
+        nextBtn.style.display = "inline-block";
+
+    }
+}
+
+
+/* الطابق التالي */
+function nextFloor() {
+
+    floor++;
+
+    floorElement.textContent = floor;
+
+    floorText.textContent = floor;
+
+    /* تحديث شريط التقدم */
+    progress.style.width =
+        (floor / 20 * 100) + "%";
+
+    createQuestion();
+}
+
+
+/* نهاية اللعبة */
+function finishGame() {
+
+    question.textContent = "🎊 مبروك! 🎊";
+
+    answers.innerHTML = "";
+
+    message.innerHTML =
+        `<div class="win">
+            🏆 لقد أكملت جميع الطوابق! 🏆
+            <br>
+            مجموع نقاطك: ${score}
+            <br>
+            ⭐ أحسنت!
+        </div>`;
+
+    nextBtn.style.display = "none";
+
+    restartBtn.style.display = "inline-block";
+
+    progress.style.width = "100%";
+}
+
+
+/* إعادة اللعبة */
+function restartGame() {
+
+    floor = 1;
+    score = 0;
+
+    scoreElement.textContent = "0";
+
+    floorElement.textContent = "1";
+
+    floorText.textContent = "1";
+
+    progress.style.width = "5%";
+
+    restartBtn.style.display = "none";
+
+    createQuestion();
+}
+
+
+/* بدء اللعبة */
+createQuestion();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>كريستيانو رونالدو | CR7</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Tahoma, sans-serif;
+            background: #f3f3f3;
+            color: #222;
+        }
+
+        /* Header */
+        header {
+            background: #050505;
+            color: white;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            color: #e30613;
+            font-size: 28px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #e30613;
+        }
+
+        /* Hero */
+        .hero {
+            height: 650px;
+
+            background:
+                linear-gradient(
+                    rgba(0, 0, 0, 0.55),
+                    rgba(0, 0, 0, 0.75)
+                ),
+                url("https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1800&q=90")
+                center/cover;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 20px;
+        }
+
+        .hero h2 {
+            font-size: 75px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 5px 20px black;
+        }
+
+        .hero h3 {
+            font-size: 35px;
+            color: #e30613;
+            margin: 10px 0;
+        }
+
+        .hero p {
+            font-size: 22px;
+            margin: 20px 0 30px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 35px;
+            background: #e30613;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .button:hover {
+            background: #b0000a;
+            transform: scale(1.05);
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 8%;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 50px;
+            color: #111;
+        }
+
+        .title::after {
+            content: "";
+            display: block;
+            width: 70px;
+            height: 5px;
+            background: #e30613;
+            margin: 15px auto;
+        }
+
+        /* About */
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .about img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .about h3 {
+            font-size: 32px;
+            color: #e30613;
+            margin-bottom: 20px;
+        }
+
+        .about p {
+            font-size: 19px;
+            line-height: 2;
+        }
+
+        /* Stats */
+        .stats {
+            background: #080808;
+            color: white;
+        }
+
+        .stats .title {
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 35px 20px;
+            background: #171717;
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .stat:hover {
+            transform: translateY(-8px);
+        }
+
+        .stat .number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #e30613;
+        }
+
+        .stat p {
+            font-size: 18px;
+        }
+
+        /* Clubs */
+        .clubs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .club {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .club:hover {
+            transform: translateY(-10px);
+        }
+
+        .club .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .club h3 {
+            color: #e30613;
+            margin-bottom: 10px;
+        }
+
+        /* Achievements */
+        .achievements {
+            background: #eeeeee;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .card .emoji {
+            font-size: 55px;
+        }
+
+        .card h3 {
+            margin: 15px 0;
+            color: #111;
+        }
+
+        /* Quote */
+        .quote {
+            background:
+                linear-gradient(
+                    rgba(0,0,0,.8),
+                    rgba(0,0,0,.8)
+                ),
+                url("https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=1800&q=90")
+                center/cover;
+
+            color: white;
+            text-align: center;
+        }
+
+        .quote p {
+            font-size: 35px;
+            font-weight: bold;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .quote span {
+            display: block;
+            color: #e30613;
+            margin-top: 20px;
+            font-size: 22px;
+        }
+
+        /* Footer */
+        footer {
+            background: #050505;
+            color: white;
+            text-align: center;
+            padding: 35px;
+        }
+
+        footer strong {
+            color: #e30613;
+        }
+
+        /* Mobile */
+        @media (max-width: 900px) {
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav {
+                text-align: center;
+            }
+
+            nav a {
+                display: inline-block;
+                margin: 5px;
+            }
+
+            .hero h2 {
+                font-size: 50px;
+            }
+
+            .hero h3 {
+                font-size: 28px;
+            }
+
+            .about {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .clubs {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .hero {
+                height: 550px;
+            }
+
+            .hero h2 {
+                font-size: 40px;
+            }
+
+            .stats-grid,
+            .clubs {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 55px 5%;
+            }
+
+            .title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Header -->
+<header>
+
+    <h1>CR7</h1>
+
+    <nav>
+        <a href="#about">عن رونالدو</a>
+        <a href="#stats">الأرقام</a>
+        <a href="#clubs">الأندية</a>
+        <a href="#achievements">الإنجازات</a>
+    </nav>
+
+</header>
+
+
+<!-- Hero -->
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h2>كريستيانو رونالدو</h2>
+
+        <h3>CRISTIANO RONALDO</h3>
+
+        <p>
+            أحد أعظم لاعبي كرة القدم في تاريخ اللعبة
+        </p>
+
+        <a href="#about" class="button">
+            اكتشف مسيرته ⚽
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- About -->
+<section id="about">
+
+    <h2 class="title">من هو كريستيانو رونالدو؟</h2>
+
+    <div class="about">
+
+        <img
+            src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1000&q=90"
+            alt="كرة القدم">
+
+        <div>
+
+            <h3>أسطورة البرتغال 🇵🇹</h3>
+
+            <p>
+                كريستيانو رونالدو دوس سانتوس أفيرو هو لاعب كرة
+                قدم برتغالي، ويُعتبر من أبرز اللاعبين في تاريخ
+                كرة القدم.
+            </p>
+
+            <p>
+                اشتهر بسرعته، قوته البدنية، مهاراته في تسجيل
+                الأهداف، وقدرته الكبيرة على المنافسة وتحقيق
+                الإنجازات.
+            </p>
+
+            <p>
+                لعب خلال مسيرته مع أندية كبيرة وحقق العديد من
+                البطولات والجوائز الفردية والجماعية.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Stats -->
+<section id="stats" class="stats">
+
+    <h2 class="title">أرقام مميزة</h2>
+
+    <div class="stats-grid">
+
+        <div class="stat">
+            <div class="number">5</div>
+            <p>كرات ذهبية</p>
+        </div>
+
+        <div class="stat">
+            <div class="number">5</div>
+            <p>دوري أبطال أوروبا</p>
+        </div>
+
+        <div class="stat">
+            <div class="number">1</div>
+            <p>بطولة أمم أوروبا</p>
+        </div>
+
+        <div class="stat">
+            <div class="number">7</div>
+            <p>أرقام قياسية وجوائز فردية كبرى</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Clubs -->
+<section id="clubs">
+
+    <h2 class="title">أهم الأندية</h2>
+
+    <div class="clubs">
+
+        <div class="club">
+            <div class="icon">🇵🇹</div>
+            <h3>سبورتينغ لشبونة</h3>
+            <p>بداية مسيرته الاحترافية.</p>
+        </div>
+
+        <div class="club">
+            <div class="icon">🔴</div>
+            <h3>مانشستر يونايتد</h3>
+            <p>تألق مع النادي الإنجليزي وحقق العديد من الألقاب.</p>
+        </div>
+
+        <div class="club">
+            <div class="icon">⚪</div>
+            <h3>ريال مدريد</h3>
+            <p>واحدة من أهم مراحل مسيرته الكروية.</p>
+        </div>
+
+        <div class="club">
+            <div class="icon">⚫</div>
+            <h3>يوفنتوس</h3>
+            <p>خاض تجربة مميزة في الدوري الإيطالي.</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Achievements -->
+<section id="achievements" class="achievements">
+
+    <h2 class="title">أهم الإنجازات</h2>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="emoji">🏆</div>
+
+            <h3>دوري أبطال أوروبا</h3>
+
+            <p>
+                حقق رونالدو لقب دوري أبطال أوروبا
+                عدة مرات خلال مسيرته.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="emoji">🥇</div>
+
+            <h3>الكرة الذهبية</h3>
+
+            <p>
+                حصل على جائزة الكرة الذهبية
+                خمس مرات.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="emoji">🇵🇹</div>
+
+            <h3>بطولة أوروبا</h3>
+
+            <p>
+                قاد منتخب البرتغال لتحقيق بطولة
+                أمم أوروبا عام 2016.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="emoji">⚽</div>
+
+            <h3>الأهداف</h3>
+
+            <p>
+                يمتلك سجلاً استثنائياً في تسجيل
+                الأهداف مع الأندية والمنتخب.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="emoji">👑</div>
+
+            <h3>الجوائز الفردية</h3>
+
+            <p>
+                حصل على العديد من الجوائز والألقاب
+                الفردية طوال مسيرته.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="emoji">🌍</div>
+
+            <h3>نجاح عالمي</h3>
+
+            <p>
+                أصبح أحد أشهر الرياضيين في العالم
+                وأكثرهم تأثيراً.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Quote -->
+<section class="quote">
+
+    <p>
+        "موهبتي هي أنني أعمل أكثر من الآخرين."
+    </p>
+
+    <span>— كريستيانو 2 رونالدو</span>
+
+</section>
+
+
+<!-- Footer -->
+<footer>
+
+    <p>
+        ⚽ موقع تعريفي عن <strong>كريستيانو  2رونالدو CR7</strong>
+    </p>
+
+    <p>
+        تم تصميم الموقع باستخدام HTML و CSS
+    </p>
+
+</footer>
+
+
+</body>
+</html>

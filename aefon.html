@@ -1,0 +1,383 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone | عالم الآيفون</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f5f7;
+            color: #111;
+        }
+
+        /* Navbar */
+        nav {
+            background: rgba(255,255,255,0.95);
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #222;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #0071e3;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 620px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #000 0%, #171717 50%, #333 100%);
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 72px;
+            margin-bottom: 20px;
+        }
+
+        .hero h2 {
+            font-size: 34px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #ccc;
+            max-width: 650px;
+            margin: auto;
+            line-height: 1.8;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 14px 30px;
+            background: #0071e3;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .button:hover {
+            background: #005bb5;
+            transform: scale(1.05);
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 8%;
+            text-align: center;
+        }
+
+        section h2 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 45px;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 25px;
+            padding: 35px 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .phone {
+            font-size: 90px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 26px;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* Features */
+        .features {
+            background: white;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .feature {
+            padding: 30px 15px;
+        }
+
+        .feature-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* CTA */
+        .cta {
+            background: #000;
+            color: white;
+        }
+
+        .cta p {
+            color: #bbb;
+            margin-top: 15px;
+            font-size: 18px;
+        }
+
+        /* Footer */
+        footer {
+            background: #111;
+            color: #aaa;
+            text-align: center;
+            padding: 30px;
+        }
+
+        footer strong {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero h1 {
+                font-size: 55px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                padding: 0 20px;
+            }
+
+            nav ul {
+                gap: 12px;
+                font-size: 14px;
+            }
+
+            .hero h1 {
+                font-size: 45px;
+            }
+
+            .hero h2 {
+                font-size: 26px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            section h2 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo"> iPhone</div>
+
+        <ul>
+            <li><a href="#home">الرئيسية</a></li>
+            <li><a href="#models">الموديلات</a></li>
+            <li><a href="#features">المميزات</a></li>
+            <li><a href="#about">عن الآيفون</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="home">
+        <div>
+            <h1> iPhone</h1>
+            <h2>تجربة مختلفة تماماً</h2>
+            <p>
+                اكتشف عالم الآيفون، حيث يجتمع التصميم الأنيق
+                والأداء القوي والتكنولوجيا الحديثة في جهاز واحد.
+            </p>
+
+            <a href="#models" class="button">اكتشف الموديلات</a>
+        </div>
+    </section>
+
+    <!-- Models -->
+    <section id="models">
+        <h2>موديلات iPhone</h2>
+        <p class="subtitle">اختر الآيفون الذي يناسبك</p>
+
+        <div class="cards">
+
+            <div class="card">
+                <div class="phone">📱</div>
+                <h3>iPhone Pro</h3>
+                <p>
+                    أداء احترافي، كاميرات متطورة وتصميم فاخر
+                    لعشاق التكنولوجيا والأداء العالي.
+                </p>
+                <a href="#" class="button">معرفة المزيد</a>
+            </div>
+
+            <div class="card">
+                <div class="phone">📱</div>
+                <h3>iPhone</h3>
+                <p>
+                    تجربة متكاملة تجمع بين الأداء الرائع
+                    والتصميم الجميل وسهولة الاستخدام.
+                </p>
+                <a href="#" class="button">معرفة المزيد</a>
+            </div>
+
+            <div class="card">
+                <div class="phone">📱</div>
+                <h3>iPhone Plus</h3>
+                <p>
+                    شاشة كبيرة وتجربة مميزة لعشاق مشاهدة
+                    الفيديو والألعاب والمحتوى.
+                </p>
+                <a href="#" class="button">معرفة المزيد</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <h2>لماذا iPhone؟</h2>
+        <p class="subtitle">تقنيات مصممة لتجعل حياتك أسهل</p>
+
+        <div class="feature-grid">
+
+            <div class="feature">
+                <div class="feature-icon">📸</div>
+                <h3>كاميرا متطورة</h3>
+                <p>التقاط صور وفيديوهات بجودة عالية.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>أداء قوي</h3>
+                <p>معالج سريع لأداء الألعاب والتطبيقات.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h3>خصوصية وأمان</h3>
+                <p>تقنيات تساعد على حماية بياناتك وخصوصيتك.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🔋</div>
+                <h3>بطارية تدوم</h3>
+                <p>استخدم جهازك لفترة أطول خلال اليوم.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- About -->
+    <section id="about">
+        <h2>عن iPhone</h2>
+
+        <p class="subtitle">
+            الآيفون هو أحد أشهر الهواتف الذكية في العالم،
+            ويتميز بتكامل العتاد مع نظام التشغيل والتصميم.
+        </p>
+
+        <a href="#home" class="button">العودة للأعلى</a>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <h2>جاهز لاكتشاف عالم iPhone؟</h2>
+        <p>ابدأ رحلتك واستكشف المزيد من المميزات.</p>
+
+        <a href="#models" class="button">ابدأ الآن</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            © 2026 <strong>iPhone Website</strong> —
+            جميع الحقوق محفوظةادم  
+        </p>
+    </footer>
+
+</body>
+</html>

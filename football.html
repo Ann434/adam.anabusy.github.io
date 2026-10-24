@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚽ لعبة كرة القدم</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(#075e1b, #012d0c);
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    margin: 12px;
+    font-size: 34px;
+}
+
+#info {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+#message {
+    height: 35px;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+/* الملعب */
+#game {
+    position: relative;
+    width: 900px;
+    height: 550px;
+    max-width: 95vw;
+    margin: auto;
+    overflow: hidden;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #159447 0px,
+            #159447 90px,
+            #12843e 90px,
+            #12843e 180px
+        );
+
+    border: 5px solid white;
+}
+
+/* خط المنتصف */
+.middle-line {
+    position: absolute;
+    width: 4px;
+    height: 100%;
+    background: white;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+}
+
+/* دائرة المنتصف */
+.center-circle {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border: 4px solid white;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* المرمى */
+.goal {
+    position: absolute;
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 80px;
+    height: 200px;
+    border: 5px solid white;
+    background: rgba(255,255,255,0.15);
+}
+
+/* اللاعب */
+#player {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: #1265e8;
+    border: 4px solid white;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 25px;
+    z-index: 5;
+}
+
+/* الكرة */
+#ball {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    background: white;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+    z-index: 4;
+
+    transition: transform 0.05s linear;
+}
+
+/* دوران الكرة */
+.ball-spin {
+    animation: spinBall 0.25s linear infinite;
+}
+
+@keyframes spinBall {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+button {
+    margin-top: 15px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 10px;
+    background: #ffd000;
+    font-size: 19px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: white;
+}
+
+.controls {
+    margin-top: 12px;
+    font-size: 17px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚽ لعبة كرة القدم ⚽</h1>
+
+<div id="info">
+    <div>🥅 الأهداف: <span id="score">0</span></div>
+    <div>⏱️ الوقت: <span id="time">60</span></div>
+</div>
+
+<div id="message">
+    اقترب من الكرة وسدد!
+</div>
+
+<div id="game">
+
+    <div class="middle-line"></div>
+
+    <div class="center-circle"></div>
+
+    <div class="goal"></div>
+
+    <div id="player">🏃</div>
+
+    <div id="ball">⚽</div>
+
+</div>
+
+<div class="controls">
+    ⬆️ ⬇️ ⬅️ ➡️ للتحرك
+    <br>
+    اضغط <b>SPACE</b> لتسديد الكرة 🚀
+</div>
+
+<button onclick="restartGame()">🔄 إعادة اللعب</button>
+
+<script>
+
+const game = document.getElementById("game");
+const player = document.getElementById("player");
+const ball = document.getElementById("ball");
+
+const scoreText = document.getElementById("score");
+const timeText = document.getElementById("time");
+const message = document.getElementById("message");
+
+let playerX = 120;
+let playerY = 250;
+
+let ballX = 200;
+let ballY = 260;
+
+let score = 0;
+let time = 60;
+
+let playing = true;
+let shooting = false;
+
+const playerSpeed = 7;
+
+
+/* رسم اللاعب والكرة */
+function draw() {
+
+    player.style.left = playerX + "px";
+    player.style.top = playerY + "px";
+
+    ball.style.left = ballX + "px";
+    ball.style.top = ballY + "px";
+}
+
+
+/* حساب المسافة بين اللاعب والكرة */
+function getDistance() {
+
+    const dx = playerX - ballX;
+    const dy = playerY - ballY;
+
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+
+/* تحريك اللاعب */
+document.addEventListener("keydown", function(event) {
+
+    if (!playing || shooting) return;
+
+    if (event.key === "ArrowUp") {
+        playerY -= playerSpeed;
+    }
+
+    if (event.key === "ArrowDown") {
+        playerY += playerSpeed;
+    }
+
+    if (event.key === "ArrowLeft") {
+        playerX -= playerSpeed;
+    }
+
+    if (event.key === "ArrowRight") {
+        playerX += playerSpeed;
+    }
+
+
+    /* منع اللاعب من الخروج من الملعب */
+
+    playerX = Math.max(
+        0,
+        Math.min(game.clientWidth - 48, playerX)
+    );
+
+    playerY = Math.max(
+        0,
+        Math.min(game.clientHeight - 48, playerY)
+    );
+
+
+    /* التسديد */
+
+    if (event.code === "Space") {
+        shootBall();
+    }
+
+    draw();
+});
+
+
+/* تسديد الكرة */
+function shootBall() {
+
+    if (getDistance() > 80) {
+
+        message.textContent =
+            "❗ اقترب من الكرة أولاً!";
+
+        return;
+    }
+
+    if (shooting) return;
+
+    shooting = true;
+
+    message.textContent =
+        "🚀 تسديدة قوية!";
+
+    ball.classList.add("ball-spin");
+
+    let shots = 0;
+
+    const shootingTimer = setInterval(function() {
+
+        ballX += 14;
+
+        shots++;
+
+        draw();
+
+
+        /* إذا دخلت الكرة المرمى */
+
+        if (
+            ballX >= game.clientWidth - 75 &&
+            ballY >
+            game.clientHeight / 2 - 100 &&
+            ballY <
+            game.clientHeight / 2 + 100
+        ) {
+
+            clearInterval(shootingTimer);
+
+            score++;
+
+            scoreText.textContent = score;
+
+            message.textContent =
+                "🎉 جوووووول!!! ⚽🔥";
+
+            ball.classList.remove("ball-spin");
+
+            shooting = false;
+
+            setTimeout(resetBall, 700);
+
+            return;
+        }
+
+
+        /* إذا خرجت الكرة */
+
+        if (ballX > game.clientWidth) {
+
+            clearInterval(shootingTimer);
+
+            ball.classList.remove("ball-spin");
+
+            shooting = false;
+
+            resetBall();
+        }
+
+    }, 20);
+}
+
+
+/* إعادة الكرة */
+function resetBall() {
+
+    ballX = 180;
+
+    ballY =
+        Math.random() *
+        (game.clientHeight - 80) + 30;
+
+    message.textContent =
+        "⚽ سجّل هدفًا آخر!";
+
+    draw();
+}
+
+
+/* إعادة اللعبة */
+function restartGame() {
+
+    playerX = 120;
+    playerY = 250;
+
+    ballX = 180;
+    ballY = 260;
+
+    score = 0;
+    time = 60;
+
+    playing = true;
+    shooting = false;
+
+    scoreText.textContent = score;
+    timeText.textContent = time;
+
+    message.textContent =
+        "اقترب من الكرة وسدد!";
+
+    ball.classList.remove("ball-spin");
+
+    draw();
+}
+
+
+/* المؤقت */
+setInterval(function() {
+
+    if (!playing) return;
+
+    time--;
+
+    timeText.textContent = time;
+
+    if (time <= 0) {
+
+        playing = false;
+
+        message.textContent =
+            "🏆 انتهى الوقت! مجموع أهدافك: " + score;
+    }
+
+}, 1000);
+
+
+/* بداية اللعبة */
+draw();
+
+</script>
+
+</body>
+</html>

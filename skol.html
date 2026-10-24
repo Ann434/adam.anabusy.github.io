@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدرسة الخوارزمي</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Tahoma, sans-serif;
+            background: #f4f8fb;
+            color: #1f2937;
+        }
+
+        /* شريط التنقل */
+        nav {
+            background: #075985;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+
+        .logo {
+            color: white;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        nav a:hover {
+            color: #facc15;
+        }
+
+        /* الواجهة */
+        .hero {
+            min-height: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            background:
+                linear-gradient(rgba(3, 50, 75, 0.75), rgba(3, 50, 75, 0.75)),
+                url("https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=80");
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 55px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 23px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #facc15;
+            color: #172554;
+            padding: 14px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background: white;
+        }
+
+        /* الأقسام */
+        section {
+            padding: 70px 8%;
+        }
+
+        .title {
+            text-align: center;
+            color: #075985;
+            font-size: 35px;
+            margin-bottom: 45px;
+        }
+
+        .about {
+            max-width: 900px;
+            margin: auto;
+            text-align: center;
+            line-height: 2;
+            font-size: 19px;
+        }
+
+        /* البطاقات */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+        }
+
+        .card .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            color: #075985;
+            margin-bottom: 12px;
+            font-size: 23px;
+        }
+
+        .card p {
+            line-height: 1.8;
+        }
+
+        /* الأخبار */
+        .news {
+            background: #e0f2fe;
+        }
+
+        .news-box {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .news-item {
+            background: white;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-right: 5px solid #075985;
+            border-radius: 10px;
+        }
+
+        .news-item h3 {
+            color: #075985;
+            margin-bottom: 8px;
+        }
+
+        /* التواصل */
+        .contact {
+            text-align: center;
+        }
+
+        .contact-box {
+            background: white;
+            max-width: 700px;
+            margin: auto;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .contact-box p {
+            font-size: 19px;
+            margin: 15px;
+        }
+
+        /* الفوتر */
+        footer {
+            background: #082f49;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        /* الموبايل */
+        @media (max-width: 800px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                gap: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- القائمة -->
+    <nav>
+        <div class="logo">🏫 مدرسة الخوارزمي</div>
+
+        <ul>
+            <li><a href="#home">الرئيسية</a></li>
+            <li><a href="#about">عن المدرسة</a></li>
+            <li><a href="#programs">البرامج</a></li>
+            <li><a href="#news">الأخبار</a></li>
+            <li><a href="#contact">تواصل معنا</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- الواجهة الرئيسية -->
+    <section class="hero" id="home">
+        <div>
+            <h1>مدرسة الخوارزمي</h1>
+
+            <p>
+                معًا نحو العلم، الإبداع والنجاح 🚀
+            </p>
+
+            <a class="btn" href="#about">
+                اكتشف مدرستنا
+            </a>
+        </div>
+    </section>
+
+
+    <!-- عن المدرسة -->
+    <section id="about">
+
+        <h2 class="title">📚 عن المدرسة</h2>
+
+        <div class="about">
+            <p>
+                مرحبًا بكم في الموقع الإلكتروني لمدرسة الخوارزمي.
+                نسعى إلى توفير بيئة تعليمية مميزة تساعد الطلاب على
+                تطوير مهاراتهم العلمية والإبداعية، وتشجعهم على التعلم
+                والتعاون واكتشاف مواهبهم.
+            </p>
+
+            <br>
+
+            <p>
+                هدفنا هو إعداد جيل متعلم وطموح يستطيع بناء مستقبل أفضل
+                بالعلم والمعرفة.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- البرامج -->
+    <section id="programs">
+
+        <h2 class="title">⭐ ما يميز مدرستنا</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <div class="icon">📖</div>
+                <h3>التعليم</h3>
+                <p>
+                    الاهتمام بالمواد الدراسية وتنمية مهارات الطلاب
+                    في مختلف المجالات.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="icon">💻</div>
+                <h3>التكنولوجيا</h3>
+                <p>
+                    تشجيع الطلاب على استخدام التكنولوجيا والبرمجة
+                    والتعلم الرقمي.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🏆</div>
+                <h3>التميز</h3>
+                <p>
+                    دعم الطلاب وتحفيزهم للوصول إلى أفضل النتائج
+                    وتحقيق طموحاتهم.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🔬</div>
+                <h3>العلوم</h3>
+                <p>
+                    التعلم من خلال التجارب والاستكشاف والبحث العلمي.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="icon">⚽</div>
+                <h3>الرياضة</h3>
+                <p>
+                    الاهتمام بالنشاط الرياضي والعمل الجماعي وروح الفريق.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🎨</div>
+                <h3>الإبداع</h3>
+                <p>
+                    اكتشاف مواهب الطلاب في الفن والتصميم والابتكار.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- الأخبار -->
+    <section class="news" id="news">
+
+        <h2 class="title">📰 أخبار المدرسة</h2>
+
+        <div class="news-box">
+
+            <div class="news-item">
+                <h3>🎉 بداية عام دراسي جديد</h3>
+                <p>
+                    نتمنى لجميع طلابنا عامًا دراسيًا مليئًا بالنجاح والتفوق.
+                </p>
+            </div>
+
+            <div class="news-item">
+                <h3>💻 نشاط التكنولوجيا</h3>
+                <p>
+                    فعالية تعليمية للتعرف على التكنولوجيا والبرمجة.
+                </p>
+            </div>
+
+            <div class="news-item">
+                <h3>🏆 تكريم الطلاب المتفوقين</h3>
+                <p>
+                    نحتفل بإنجازات طلابنا ونشجعهم على الاستمرار في التفوق.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- التواصل -->
+    <section id="contact">
+
+        <h2 class="title">📞 تواصل معنا</h2>
+
+        <div class="contact-box">
+
+            <p>🏫 مدرسة الخوارزمي</p>
+
+            <p>📍 الموقع: اكتب موقع المدرسة هنا</p>
+
+            <p>📞 الهاتف: اكتب رقم الهاتف هنا</p>
+
+            <p>📧 البريد الإلكتروني: اكتب البريد هنا</p>
+
+            <br>
+
+            <a class="btn" href="mailto:school@example.com">
+                أرسل رسالة
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- أسفل الموقع -->
+    <footer>
+
+        <p>
+            © 2026 مدرسة الخوارزمي - جميع الحقوق محفوظة
+        </p>
+
+        <p>
+            تم تصميم الموقع باستخدام HTML و CSS ❤️
+        </p>
+
+    </footer>
+
+</body>
+</html>

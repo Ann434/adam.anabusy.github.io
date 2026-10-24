@@ -1,0 +1,499 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متاهة الطوابق 🏢</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        user-select: none;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #111827, #1e293b);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+
+    .game {
+        text-align: center;
+        width: 100%;
+        max-width: 700px;
+        padding: 20px;
+    }
+
+    h1 {
+        margin: 5px;
+        font-size: 38px;
+    }
+
+    #floorText {
+        font-size: 22px;
+        margin: 10px;
+        color: #ffd54f;
+        font-weight: bold;
+    }
+
+    #maze {
+        width: 540px;
+        height: 540px;
+        max-width: 90vw;
+        max-height: 90vw;
+        margin: 15px auto;
+        display: grid;
+        gap: 2px;
+        background: #020617;
+        padding: 6px;
+        border-radius: 15px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.7);
+    }
+
+    .cell {
+        min-width: 0;
+        min-height: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: clamp(12px, 3vw, 25px);
+    }
+
+    .wall {
+        background: #334155;
+        border-radius: 4px;
+        box-shadow: inset 0 0 0 1px #475569;
+    }
+
+    .path {
+        background: #e2e8f0;
+        border-radius: 3px;
+    }
+
+    .player {
+        background: #fb923c;
+        border-radius: 50%;
+        font-size: clamp(14px, 3vw, 25px);
+    }
+
+    .finish {
+        background: #22c55e;
+        border-radius: 5px;
+        font-size: clamp(14px, 3vw, 25px);
+    }
+
+    .key {
+        background: #facc15;
+        border-radius: 50%;
+        font-size: clamp(14px, 3vw, 23px);
+    }
+
+    .locked {
+        background: #ef4444;
+        border-radius: 5px;
+        font-size: clamp(14px, 3vw, 23px);
+    }
+
+    .info {
+        font-size: 18px;
+        margin: 8px;
+    }
+
+    #message {
+        min-height: 30px;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 8px;
+    }
+
+    button {
+        border: none;
+        padding: 12px 25px;
+        border-radius: 12px;
+        background: #facc15;
+        color: #111827;
+        font-size: 19px;
+        font-weight: bold;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+    }
+
+    .controls {
+        margin: 15px auto 0;
+        display: grid;
+        grid-template-columns: repeat(3, 65px);
+        justify-content: center;
+        gap: 7px;
+    }
+
+    .controls button {
+        width: 65px;
+        height: 52px;
+        padding: 0;
+        background: #475569;
+        color: white;
+        font-size: 24px;
+    }
+
+    .up {
+        grid-column: 2;
+    }
+
+    .left {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .down {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .right {
+        grid-column: 3;
+        grid-row: 2;
+    }
+
+    #winScreen {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+    }
+
+    .winBox {
+        background: #1e293b;
+        padding: 35px;
+        border-radius: 20px;
+        text-align: center;
+        width: min(90%, 450px);
+        box-shadow: 0 0 30px #000;
+    }
+
+    .winBox h2 {
+        font-size: 35px;
+        margin-top: 0;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>🏢 متاهة الطوابق</h1>
+
+    <div id="floorText">الطابق 1 من 5</div>
+
+    <div class="info">
+        🔑 اجمع المفتاح ثم اذهب إلى 🏆
+    </div>
+
+    <div id="maze"></div>
+
+    <div id="message"></div>
+
+    <button onclick="restartFloor()">🔄 إعادة الطابق</button>
+
+    <div class="controls">
+        <button class="up" onclick="move(-1, 0)">⬆️</button>
+        <button class="left" onclick="move(0, -1)">⬅️</button>
+        <button class="down" onclick="move(1, 0)">⬇️</button>
+        <button class="right" onclick="move(0, 1)">➡️</button>
+    </div>
+
+    <p>استخدم أسهم لوحة المفاتيح أو الأزرار للتحرك</p>
+
+</div>
+
+<div id="winScreen">
+    <div class="winBox">
+        <h2>🎉 مبروك!</h2>
+        <p>لقد أنهيت جميع الطوابق!</p>
+        <button onclick="restartGame()">🏠 العب من جديد</button>
+    </div>
+</div>
+
+<script>
+const floors = [
+    [
+        "11111111111",
+        "10000000001",
+        "10111111101",
+        "10100000101",
+        "10101110101",
+        "10101000101",
+        "10101111101",
+        "10100000001",
+        "10111111101",
+        "10000000001",
+        "11111111111"
+    ],
+
+    [
+        "11111111111",
+        "10000010001",
+        "10111010101",
+        "10100010101",
+        "10101110101",
+        "10100000101",
+        "10111110101",
+        "10000010101",
+        "10111010101",
+        "10000000001",
+        "11111111111"
+    ],
+
+    [
+        "11111111111",
+        "10000000001",
+        "10111111101",
+        "10100010001",
+        "10101110111",
+        "10100000101",
+        "10111110101",
+        "10100000101",
+        "10101111101",
+        "10000000001",
+        "11111111111"
+    ],
+
+    [
+        "11111111111",
+        "10001000001",
+        "10101011101",
+        "10101000101",
+        "10101110101",
+        "10000010101",
+        "11111010101",
+        "10000010101",
+        "10111110101",
+        "10000000001",
+        "11111111111"
+    ],
+
+    [
+        "11111111111",
+        "10000000001",
+        "10111111101",
+        "10100000001",
+        "10101111111",
+        "10101000001",
+        "10101111101",
+        "10100000101",
+        "10111110101",
+        "10000000001",
+        "11111111111"
+    ]
+];
+
+let currentFloor = 0;
+let mazeData;
+let player;
+let key;
+let finish;
+let hasKey = false;
+
+function setupFloor() {
+
+    mazeData = floors[currentFloor];
+
+    player = {
+        row: 1,
+        col: 1
+    };
+
+    key = {
+        row: mazeData.length - 3,
+        col: mazeData[0].length - 2
+    };
+
+    finish = {
+        row: 1,
+        col: mazeData[0].length - 2
+    };
+
+    hasKey = false;
+
+    document.getElementById("floorText").textContent =
+        `الطابق ${currentFloor + 1} من ${floors.length}`;
+
+    document.getElementById("message").textContent =
+        "ابحث عن 🔑 أولًا!";
+
+    drawMaze();
+}
+
+function drawMaze() {
+
+    const maze = document.getElementById("maze");
+
+    const rows = mazeData.length;
+    const cols = mazeData[0].length;
+
+    maze.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    maze.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+
+    maze.innerHTML = "";
+
+    for (let r = 0; r < rows; r++) {
+
+        for (let c = 0; c < cols; c++) {
+
+            const cell = document.createElement("div");
+            cell.className = "cell";
+
+            if (mazeData[r][c] === "1") {
+                cell.classList.add("wall");
+            } else {
+                cell.classList.add("path");
+            }
+
+            if (r === key.row && c === key.col && !hasKey) {
+                cell.className = "cell key";
+                cell.textContent = "🔑";
+            }
+
+            if (r === finish.row && c === finish.col) {
+
+                if (hasKey) {
+                    cell.className = "cell finish";
+                    cell.textContent = "🏆";
+                } else {
+                    cell.className = "cell locked";
+                    cell.textContent = "🔒";
+                }
+            }
+
+            if (r === player.row && c === player.col) {
+                cell.className = "cell player";
+                cell.textContent = "🧑";
+            }
+
+            maze.appendChild(cell);
+        }
+    }
+}
+
+function move(dr, dc) {
+
+    const newRow = player.row + dr;
+    const newCol = player.col + dc;
+
+    if (
+        newRow < 0 ||
+        newRow >= mazeData.length ||
+        newCol < 0 ||
+        newCol >= mazeData[0].length
+    ) {
+        return;
+    }
+
+    if (mazeData[newRow][newCol] === "1") {
+        return;
+    }
+
+    player.row = newRow;
+    player.col = newCol;
+
+    // أخذ المفتاح
+    if (
+        player.row === key.row &&
+        player.col === key.col &&
+        !hasKey
+    ) {
+        hasKey = true;
+
+        document.getElementById("message").textContent =
+            "🔑 ممتاز! اذهب الآن إلى 🏆";
+    }
+
+    // الوصول للنهاية
+    if (
+        player.row === finish.row &&
+        player.col === finish.col
+    ) {
+
+        if (!hasKey) {
+
+            document.getElementById("message").textContent =
+                "🔒 الباب مقفل! ابحث عن المفتاح.";
+
+            drawMaze();
+            return;
+        }
+
+        nextFloor();
+        return;
+    }
+
+    drawMaze();
+}
+
+function nextFloor() {
+
+    if (currentFloor < floors.length - 1) {
+
+        currentFloor++;
+
+        setupFloor();
+
+        document.getElementById("message").textContent =
+            "⬆️ وصلت إلى طابق جديد!";
+
+    } else {
+
+        document.getElementById("winScreen").style.display = "flex";
+    }
+}
+
+function restartFloor() {
+    setupFloor();
+}
+
+function restartGame() {
+
+    currentFloor = 0;
+
+    document.getElementById("winScreen").style.display = "none";
+
+    setupFloor();
+}
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "ArrowUp") {
+        move(-1, 0);
+    }
+
+    if (event.key === "ArrowDown") {
+        move(1, 0);
+    }
+
+    if (event.key === "ArrowLeft") {
+        move(0, -1);
+    }
+
+    if (event.key === "ArrowRight") {
+        move(0, 1);
+    }
+});
+
+setupFloor();
+</script>
+
+</body>
+</html>

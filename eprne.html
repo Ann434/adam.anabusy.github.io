@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة الكلمات العربية - 20 طابقًا</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Tahoma, Arial, sans-serif;
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #222;
+    }
+
+    .game {
+        width: 95%;
+        max-width: 700px;
+        background: white;
+        border-radius: 25px;
+        padding: 25px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+        text-align: center;
+    }
+
+    h1 {
+        margin-top: 0;
+        color: #1565c0;
+        font-size: 32px;
+    }
+
+    .info {
+        display: flex;
+        justify-content: space-around;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .box {
+        background: #e3f2fd;
+        padding: 12px 20px;
+        border-radius: 15px;
+        font-size: 19px;
+        font-weight: bold;
+    }
+
+    .question {
+        background: #f5f5f5;
+        border-radius: 18px;
+        padding: 25px 15px;
+        margin: 20px 0;
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    .answers {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .answer {
+        border: none;
+        border-radius: 15px;
+        padding: 18px;
+        font-size: 21px;
+        font-weight: bold;
+        cursor: pointer;
+        background: #eeeeee;
+        transition: 0.2s;
+    }
+
+    .answer:hover {
+        transform: scale(1.03);
+        background: #bbdefb;
+    }
+
+    .correct {
+        background: #66bb6a !important;
+        color: white;
+    }
+
+    .wrong {
+        background: #ef5350 !important;
+        color: white;
+    }
+
+    #message {
+        min-height: 35px;
+        margin-top: 20px;
+        font-size: 21px;
+        font-weight: bold;
+    }
+
+    #next {
+        display: none;
+        margin: 15px auto 0;
+        border: none;
+        border-radius: 15px;
+        padding: 14px 35px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        background: #1565c0;
+        color: white;
+    }
+
+    #next:hover {
+        background: #0d47a1;
+    }
+
+    .progress {
+        height: 14px;
+        background: #ddd;
+        border-radius: 20px;
+        overflow: hidden;
+        margin: 15px 0;
+    }
+
+    #progressBar {
+        height: 100%;
+        width: 5%;
+        background: #1565c0;
+        transition: 0.4s;
+    }
+
+    #endScreen {
+        display: none;
+    }
+
+    #endScreen h2 {
+        color: #1565c0;
+        font-size: 32px;
+    }
+
+    #restart {
+        border: none;
+        padding: 15px 35px;
+        border-radius: 15px;
+        background: #1565c0;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    @media(max-width:600px) {
+        .answers {
+            grid-template-columns: 1fr;
+        }
+
+        h1 {
+            font-size: 26px;
+        }
+
+        .question {
+            font-size: 22px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <div id="gameScreen">
+
+        <h1>🧠 لعبة الكلمات العربية</h1>
+
+        <div class="info">
+            <div class="box">🏢 الطابق: <span id="floor">1</span> / 20</div>
+            <div class="box">⭐ النقاط: <span id="score">0</span></div>
+        </div>
+
+        <div class="progress">
+            <div id="progressBar"></div>
+        </div>
+
+        <div class="question" id="question">
+            ما معنى كلمة "سعيد"؟
+        </div>
+
+        <div class="answers" id="answers"></div>
+
+        <div id="message"></div>
+
+        <button id="next" onclick="nextQuestion()">الطابق التالي ➜</button>
+
+    </div>
+
+    <div id="endScreen">
+        <h2>🎉 أحسنت!</h2>
+        <p style="font-size:24px;">لقد أكملت جميع الطوابق!</p>
+        <p style="font-size:22px;">
+            نتيجتك: ⭐ <span id="finalScore"></span> / 20
+        </p>
+        <button id="restart" onclick="restartGame()">🔄 العب من جديد</button>
+    </div>
+
+</div>
+
+<script>
+
+const questions = [
+
+    {
+        q: "ما معنى كلمة «سعيد»؟",
+        a: ["حزين", "فرحان", "غاضب", "متعب"],
+        correct: 1
+    },
+
+    {
+        q: "ما عكس كلمة «كبير»؟",
+        a: ["طويل", "صغير", "جميل", "سريع"],
+        correct: 1
+    },
+
+    {
+        q: "ما جمع كلمة «كتاب»؟",
+        a: ["كاتب", "كتب", "مكتبة", "كتابة"],
+        correct: 1
+    },
+
+    {
+        q: "ما معنى كلمة «شجاع»؟",
+        a: ["جبان", "قوي القلب", "كسول", "حزين"],
+        correct: 1
+    },
+
+    {
+        q: "ما عكس كلمة «سريع»؟",
+        a: ["قوي", "بطيء", "طويل", "ذكي"],
+        correct: 1
+    },
+
+    {
+        q: "ما جمع كلمة «قلم»؟",
+        a: ["أقلام", "قلمون", "قلمات", "قالم"],
+        correct: 0
+    },
+
+    {
+        q: "ما معنى كلمة «جميل»؟",
+        a: ["حسن", "قبيح", "صغير", "ضعيف"],
+        correct: 0
+    },
+
+    {
+        q: "ما عكس كلمة «ليل»؟",
+        a: ["مساء", "نهار", "ظلام", "نوم"],
+        correct: 1
+    },
+
+    {
+        q: "ما جمع كلمة «ولد»؟",
+        a: ["والد", "أولاد", "ولدانة", "ولدات"],
+        correct: 1
+    },
+
+    {
+        q: "ما معنى كلمة «ذكي»؟",
+        a: ["كثير الفهم", "كسول", "ضعيف", "حزين"],
+        correct: 0
+    },
+
+    {
+        q: "ما عكس كلمة «قديم»؟",
+        a: ["بعيد", "جديد", "صغير", "سريع"],
+        correct: 1
+    },
+
+    {
+        q: "ما جمع كلمة «مدينة»؟",
+        a: ["مدائن", "مدن", "مدينيون", "مدينةات"],
+        correct: 1
+    },
+
+    {
+        q: "ما معنى كلمة «هادئ»؟",
+        a: ["كثير الضجيج", "ساكن", "غاضب", "سريع"],
+        correct: 1
+    },
+
+    {
+        q: "ما عكس كلمة «نظيف»؟",
+        a: ["مرتب", "جميل", "متسخ", "ناعم"],
+        correct: 2
+    },
+
+    {
+        q: "ما جمع كلمة «شجرة»؟",
+        a: ["شجر", "شاجرة", "شجيرات فقط", "أشجار"],
+        correct: 3
+    },
+
+    {
+        q: "ما معنى كلمة «واسع»؟",
+        a: ["ضيق", "كبير المساحة", "قصير", "صغير"],
+        correct: 1
+    },
+
+    {
+        q: "ما عكس كلمة «قوي»؟",
+        a: ["شجاع", "ضعيف", "سريع", "ذكي"],
+        correct: 1
+    },
+
+    {
+        q: "ما جمع كلمة «معلم»؟",
+        a: ["تعليم", "معالم", "معلمون", "علامة"],
+        correct: 2
+    },
+
+    {
+        q: "ما معنى كلمة «كريم»؟",
+        a: ["بخيل", "يعطي بسخاء", "غاضب", "كسول"],
+        correct: 1
+    },
+
+    {
+        q: "ما عكس كلمة «نجاح»؟",
+        a: ["فرح", "تفوق", "فشل", "ذكاء"],
+        correct: 2
+    }
+
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function loadQuestion() {
+
+    answered = false;
+
+    const q = questions[current];
+
+    document.getElementById("floor").textContent = current + 1;
+    document.getElementById("question").textContent = q.q;
+    document.getElementById("message").textContent = "";
+    document.getElementById("next").style.display = "none";
+
+    const progress = ((current + 1) / 20) * 100;
+    document.getElementById("progressBar").style.width = progress + "%";
+
+    const answers = document.getElementById("answers");
+    answers.innerHTML = "";
+
+    q.a.forEach((answer, index) => {
+
+        const button = document.createElement("button");
+
+        button.className = "answer";
+        button.textContent = answer;
+
+        button.onclick = function() {
+            checkAnswer(button, index);
+        };
+
+        answers.appendChild(button);
+    });
+}
+
+function checkAnswer(button, index) {
+
+    if (answered) return;
+
+    answered = true;
+
+    const q = questions[current];
+    const buttons = document.querySelectorAll(".answer");
+
+    buttons.forEach((b, i) => {
+
+        b.disabled = true;
+
+        if (i === q.correct) {
+            b.classList.add("correct");
+        }
+
+    });
+
+    if (index === q.correct) {
+
+        score++;
+
+        document.getElementById("score").textContent = score;
+
+        document.getElementById("message").textContent =
+            "✅ إجابة صحيحة! أحسنت 👏";
+
+    } else {
+
+        button.classList.add("wrong");
+
+        document.getElementById("message").textContent =
+            "❌ إجابة خاطئة! الإجابة الصحيحة باللون الأخضر.";
+
+    }
+
+    document.getElementById("next").style.display = "block";
+}
+
+function nextQuestion() {
+
+    current++;
+
+    if (current >= questions.length) {
+
+        document.getElementById("gameScreen").style.display = "none";
+        document.getElementById("endScreen").style.display = "block";
+
+        document.getElementById("finalScore").textContent = score;
+
+    } else {
+
+        loadQuestion();
+    }
+}
+
+function restartGame() {
+
+    current = 0;
+    score = 0;
+
+    document.getElementById("score").textContent = 0;
+
+    document.getElementById("endScreen").style.display = "none";
+    document.getElementById("gameScreen").style.display = "block";
+
+    loadQuestion();
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>

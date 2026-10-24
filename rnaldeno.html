@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>رونالدينيو | ساحر كرة القدم</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Tahoma, sans-serif;
+            background: #f5f7fa;
+            color: #222;
+            line-height: 1.8;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #006437, #009c3b);
+            color: white;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: #ffdf00;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #ffdf00;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 650px;
+
+            background:
+                linear-gradient(
+                    rgba(0, 50, 25, .65),
+                    rgba(0, 0, 0, .75)
+                ),
+                url("https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1800&q=90")
+                center/cover;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 20px;
+        }
+
+        .hero h2 {
+            font-size: 75px;
+            font-weight: bold;
+            text-shadow: 0 5px 20px black;
+        }
+
+        .hero h3 {
+            color: #ffdf00;
+            font-size: 35px;
+            margin: 10px 0;
+        }
+
+        .hero p {
+            font-size: 23px;
+            margin: 20px 0 30px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 35px;
+            background: #ffdf00;
+            color: #005c2a;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: .3s;
+        }
+
+        .button:hover {
+            transform: scale(1.08);
+            background: white;
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 8%;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 40px;
+            margin-bottom: 50px;
+            color: #006437;
+        }
+
+        .title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 5px;
+            background: #ffdf00;
+            margin: 15px auto;
+        }
+
+        /* About */
+        .about {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .about img {
+            width: 100%;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,.2);
+        }
+
+        .about h3 {
+            font-size: 32px;
+            color: #009c3b;
+            margin-bottom: 20px;
+        }
+
+        .about p {
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        /* Stats */
+        .stats {
+            background: #006437;
+            color: white;
+        }
+
+        .stats .title {
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat {
+            background: rgba(255,255,255,.1);
+            padding: 35px 20px;
+            border-radius: 18px;
+            text-align: center;
+            transition: .3s;
+        }
+
+        .stat:hover {
+            transform: translateY(-8px);
+            background: rgba(255,255,255,.18);
+        }
+
+        .stat .number {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffdf00;
+        }
+
+        .stat p {
+            font-size: 18px;
+        }
+
+        /* Clubs */
+        .clubs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .club {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,.08);
+            transition: .3s;
+        }
+
+        .club:hover {
+            transform: translateY(-10px);
+        }
+
+        .club .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .club h3 {
+            color: #006437;
+            margin-bottom: 10px;
+        }
+
+        /* Achievements */
+        .achievements {
+            background: #f0f2f3;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,.08);
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+        }
+
+        .card .emoji {
+            font-size: 55px;
+        }
+
+        .card h3 {
+            margin: 15px 0;
+            color: #006437;
+        }
+
+        /* Magic */
+        .magic {
+            background:
+                linear-gradient(
+                    rgba(0,40,20,.8),
+                    rgba(0,0,0,.85)
+                ),
+                url("https://images.unsplash.com/photo-1526232761682-d26e03ac148e?auto=format&fit=crop&w=1800&q=90")
+                center/cover;
+
+            color: white;
+            text-align: center;
+        }
+
+        .magic h2 {
+            font-size: 45px;
+            color: #ffdf00;
+            margin-bottom: 20px;
+        }
+
+        .magic p {
+            max-width: 850px;
+            margin: auto;
+            font-size: 22px;
+        }
+
+        /* Quote */
+        .quote {
+            background: #ffdf00;
+            color: #006437;
+            text-align: center;
+        }
+
+        .quote p {
+            font-size: 35px;
+            font-weight: bold;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Footer */
+        footer {
+            background: #003d20;
+            color: white;
+            text-align: center;
+            padding: 35px;
+        }
+
+        footer strong {
+            color: #ffdf00;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav {
+                text-align: center;
+            }
+
+            nav a {
+                display: inline-block;
+                margin: 5px;
+            }
+
+            .hero h2 {
+                font-size: 50px;
+            }
+
+            .hero h3 {
+                font-size: 28px;
+            }
+
+            .about {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .clubs {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .hero {
+                min-height: 550px;
+            }
+
+            .hero h2 {
+                font-size: 40px;
+            }
+
+            .stats-grid,
+            .clubs {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 55px 5%;
+            }
+
+            .title {
+                font-size: 32px;
+            }
+
+            .magic h2 {
+                font-size: 35px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Header -->
+<header>
+
+    <h1>⚽ RONALDINHO</h1>
+
+    <nav>
+        <a href="#about">عن رونالدينيو</a>
+        <a href="#stats">الأرقام</a>
+        <a href="#clubs">الأندية</a>
+        <a href="#achievements">الإنجازات</a>
+        <a href="#magic">السحر</a>
+    </nav>
+
+</header>
+
+
+<!-- Hero -->
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h2>رونالدينيو</h2>
+
+        <h3>الساحر البرازيلي 🇧🇷</h3>
+
+        <p>
+            لاعب جعل كرة القدم تبدو مثل لعبة من ألعاب السحر
+        </p>
+
+        <a href="#about" class="button">
+            اكتشف القصة ✨
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- About -->
+<section id="about">
+
+    <h2 class="title">من هو رونالدينيو؟</h2>
+
+    <div class="about">
+
+        <img
+            src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1000&q=90"
+            alt="كرة القدم">
+
+        <div>
+
+            <h3>رونالدينيو غاوتشو 🇧🇷</h3>
+
+            <p>
+                رونالدينيو هو لاعب كرة قدم برازيلي سابق،
+                اشتهر بمهاراته الاستثنائية ولمساته الساحرة
+                وابتسامته الشهيرة داخل الملعب.
+            </p>
+
+            <p>
+                لعب مع عدد من أكبر الأندية في العالم،
+                وكان من أبرز نجوم نادي برشلونة في بداية
+                ومنتصف العقد الأول من القرن الحادي والعشرين.
+            </p>
+
+            <p>
+                تميز رونالدينيو بالمراوغات والتمريرات
+                والركلات الحرة والقدرة على صناعة لحظات
+                لا تُنسى في مباريات كرة القدم.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Stats -->
+<section id="stats" class="stats">
+
+    <h2 class="title">أرقام وإنجازات</h2>
+
+    <div class="stats-grid">
+
+        <div class="stat">
+            <div class="number">1</div>
+            <p>كرة ذهبية</p>
+        </div>
+
+        <div class="stat">
+            <div class="number">1</div>
+            <p>دوري أبطال أوروبا</p>
+        </div>
+
+        <div class="stat">
+            <div class="number">1</div>
+            <p>كأس العالم</p>
+        </div>
+
+        <div class="stat">
+            <div class="number">2005</div>
+            <p>الكرة الذهبية</p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Clubs -->
+<section id="clubs">
+
+    <h2 class="title">أهم الأندية</h2>
+
+    <div class="clubs">
+
+        <div class="club">
+            <div class="icon">🇧🇷</div>
+            <h3>غريميو</h3>
+            <p>
+                النادي الذي بدأ معه رونالدينيو مسيرته
+                الاحترافية في البرازيل.
+            </p>
+        </div>
+
+        <div class="club">
+            <div class="icon">🇫🇷</div>
+            <h3>باريس سان جيرمان</h3>
+            <p>
+                لعب رونالدينيو في فرنسا ولفت الأنظار
+                بمهاراته الرائعة.
+            </p>
+        </div>
+
+        <div class="club">
+            <div class="icon">🔵🔴</div>
+            <h3>برشلونة</h3>
+            <p>
+                واحدة من أعظم مراحل مسيرته، حيث أصبح
+                أحد أشهر نجوم النادي.
+            </p>
+        </div>
+
+        <div class="club">
+            <div class="icon">🔴⚫</div>
+            <h3>ميلان</h3>
+            <p>
+                خاض تجربة مميزة في الدوري الإيطالي
+                مع نادي ميلان.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Achievements -->
+<section id="achievements" class="achievements">
+
+    <h2 class="title">أهم الإنجازات</h2>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="emoji">🏆</div>
+
+            <h3>كأس العالم</h3>
+
+            <p>
+                كان رونالدينيو ضمن منتخب البرازيل
+                الفائز بكأس العالم 2002.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="emoji">🥇</div>
+
+            <h3>الكرة الذهبية</h3>
+
+            <p>
+                حصل على جائزة الكرة الذهبية
+                عام 2005.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="emoji">🏆</div>
+
+            <h3>دوري أبطال أوروبا</h3>
+
+            <p>
+                فاز بدوري أبطال أوروبا مع برشلونة
+                عام 2006.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="emoji">🇧🇷</div>
+
+            <h3>منتخب البرازيل</h3>
+
+            <p>
+                كان أحد أبرز نجوم الجيل الذهبي
+                للمنتخب البرازيلي.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="emoji">⭐</div>
+
+            <h3>أفضل لاعب في العالم</h3>
+
+            <p>
+                حصل على جائزة أفضل لاعب في العالم
+                من FIFA.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="emoji">⚽</div>
+
+            <h3>المهارات</h3>
+
+            <p>
+                اشتهر بالمراوغات والمهارات الفردية
+                والتمريرات الخيالية.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Magic -->
+<section id="magic" class="magic">
+
+    <h2>🎩 سحر رونالدينيو</h2>
+
+    <p>
+        لم يكن رونالدينيو مجرد لاعب كرة قدم،
+        بل كان فناناً داخل الملعب.
+        ابتسامته، مراوغاته، تمريراته، وركلاته الحرة
+        جعلت الملايين حول العالم يعشقون طريقة لعبه.
+    </p>
+
+</section>
+
+
+<!-- Quote -->
+<section class="quote">
+
+    <p>
+        "كرة القدم بالنسبة لي هي الفرح،
+        الإبداع والابتسامة."
+    </p>
+
+</section>
+
+
+<!-- Footer -->
+<footer>
+
+    <p>
+        ⚽ موقع عن <strong> adamرونالدينيو</strong>
+    </p>
+
+    <p>
+        تم تصميم الموقع باستخدام HTML و CSS
+    </p>
+
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آدم عنبوسي | عالم الألعاب</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0c2a3a;
+            --ink-soft: #3a5a6a;
+            --sky: #dff6ff;
+            --mint: #c8f5e4;
+            --coral: #ff5a3d;
+            --coral-deep: #e03e22;
+            --sun: #ffc14a;
+            --leaf: #1f9d6e;
+            --white: #ffffff;
+            --line: rgba(12, 42, 58, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Tajawal", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 12% 18%, rgba(255, 193, 74, 0.35), transparent 42%),
+                radial-gradient(circle at 88% 8%, rgba(31, 157, 110, 0.22), transparent 38%),
+                linear-gradient(165deg, var(--sky) 0%, #eef9ff 45%, var(--mint) 100%);
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* Nav */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 7%;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+            animation: dropIn 0.7s ease both;
+        }
+
+        .brand {
+            font-family: "Cairo", sans-serif;
+            font-weight: 900;
+            font-size: 1.55rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand span {
+            color: var(--coral);
+        }
+
+        .topbar nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 22px;
+            font-weight: 500;
+        }
+
+        .topbar nav a {
+            position: relative;
+            transition: color 0.25s ease;
+        }
+
+        .topbar nav a::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: var(--coral);
+            transition: width 0.25s ease;
+        }
+
+        .topbar nav a:hover {
+            color: var(--coral-deep);
+        }
+
+        .topbar nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: calc(100vh - 72px);
+            display: grid;
+            align-items: end;
+            padding: 0 7% 8vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, rgba(12, 42, 58, 0.15) 0%, rgba(12, 42, 58, 0.55) 100%),
+                url("https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=2000&q=80") center/cover no-repeat;
+            animation: zoomSoft 14s ease-in-out infinite alternate;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            color: var(--white);
+            animation: riseIn 0.9s 0.15s ease both;
+        }
+
+        .hero-content .brand-mark {
+            font-family: "Cairo", sans-serif;
+            font-weight: 900;
+            font-size: clamp(3.2rem, 9vw, 6.5rem);
+            line-height: 0.95;
+            margin-bottom: 18px;
+            text-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+        }
+
+        .hero-content h1 {
+            font-family: "Cairo", sans-serif;
+            font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .hero-content p {
+            font-size: 1.15rem;
+            max-width: 34ch;
+            opacity: 0.95;
+            margin-bottom: 28px;
+        }
+
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--coral);
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 14px 28px;
+            border-radius: 12px;
+            transition: transform 0.25s ease, background 0.25s ease;
+        }
+
+        .cta:hover {
+            background: var(--coral-deep);
+            transform: translateY(-3px);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.75);
+            margin-right: 12px;
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* Sections */
+        section {
+            padding: 88px 7%;
+        }
+
+        .section-head {
+            max-width: 640px;
+            margin-bottom: 40px;
+            animation: riseIn 0.7s ease both;
+        }
+
+        .section-head h2 {
+            font-family: "Cairo", sans-serif;
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .section-head p {
+            color: var(--ink-soft);
+            font-size: 1.1rem;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .game-link {
+            display: block;
+            padding: 26px 22px;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+            animation: riseIn 0.65s ease both;
+        }
+
+        .game-link:nth-child(1) { animation-delay: 0.05s; }
+        .game-link:nth-child(2) { animation-delay: 0.1s; }
+        .game-link:nth-child(3) { animation-delay: 0.15s; }
+        .game-link:nth-child(4) { animation-delay: 0.2s; }
+        .game-link:nth-child(5) { animation-delay: 0.25s; }
+        .game-link:nth-child(6) { animation-delay: 0.3s; }
+        .game-link:nth-child(7) { animation-delay: 0.35s; }
+        .game-link:nth-child(8) { animation-delay: 0.4s; }
+        .game-link:nth-child(9) { animation-delay: 0.45s; }
+
+        .game-link:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 90, 61, 0.45);
+            background: var(--white);
+        }
+
+        .game-link .tag {
+            display: inline-block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--leaf);
+            margin-bottom: 10px;
+        }
+
+        .game-link h3 {
+            font-family: "Cairo", sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .game-link p {
+            color: var(--ink-soft);
+            font-size: 0.95rem;
+        }
+
+        .game-link .go {
+            display: inline-block;
+            margin-top: 14px;
+            font-weight: 700;
+            color: var(--coral);
+            font-size: 0.95rem;
+        }
+
+        /* Category accents */
+        #learn .game-link .tag { color: var(--leaf); }
+        #fun .game-link .tag { color: #c45a00; }
+        #stars .game-link .tag { color: #1a6fb5; }
+        #pages .game-link .tag { color: #8a4b00; }
+
+        /* About */
+        #about {
+            background: rgba(255, 255, 255, 0.55);
+            border-block: 1px solid var(--line);
+        }
+
+        .about-box {
+            display: grid;
+            gap: 28px;
+            max-width: 720px;
+        }
+
+        .about-box h2 {
+            font-family: "Cairo", sans-serif;
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            font-weight: 900;
+        }
+
+        .about-box p {
+            font-size: 1.2rem;
+            color: var(--ink-soft);
+        }
+
+        .about-box strong {
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        .email {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+            padding: 14px 20px;
+            background: var(--ink);
+            color: var(--white);
+            border-radius: 12px;
+            font-weight: 700;
+            width: fit-content;
+            transition: transform 0.25s ease, background 0.25s ease;
+        }
+
+        .email:hover {
+            background: var(--coral);
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 28px 7%;
+            color: var(--ink-soft);
+            font-size: 0.95rem;
+        }
+
+        @keyframes riseIn {
+            from {
+                opacity: 0;
+                transform: translateY(22px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes dropIn {
+            from {
+                opacity: 0;
+                transform: translateY(-16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomSoft {
+            from { transform: scale(1); }
+            to { transform: scale(1.06); }
+        }
+
+        @media (max-width: 720px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 14px 5%;
+            }
+
+            .hero {
+                padding: 0 5% 7vh;
+                min-height: 78vh;
+            }
+
+            section {
+                padding: 64px 5%;
+            }
+
+            .cta-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .cta-secondary {
+                margin-right: 0;
+                text-align: center;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="brand">آدم <span>عنبوسي</span></div>
+        <nav>
+            <a href="#learn">تعليمية</a>
+            <a href="#fun">ترفيهية</a>
+            <a href="#stars">مشاهير</a>
+            <a href="#pages">صفحات</a>
+            <a href="#about">تواصل</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div class="hero-content">
+            <div class="brand-mark">آدم</div>
+            <h1>عالم ألعاب وتعلّم بلمسة واحدة</h1>
+            <p>اختر قسماً وافتح اللعبة المناسبة فوراً — رياضيات، لغة، ترفيه، والمزيد.</p>
+            <div class="cta-group">
+                <a class="cta" href="#learn">استكشف الألعاب</a>
+                <a class="cta cta-secondary" href="#about">تعرّف على المبرمج</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="learn">
+        <div class="section-head">
+            <h2>ألعاب تعليمية</h2>
+            <p>رياضيات، كسور، هندسة، ولغات — تحديات ممتعة للتعلّم.</p>
+        </div>
+        <div class="games-grid">
+            <a class="game-link" href="saf4b-adam.html">
+                <span class="tag">رياضيات</span>
+                <h3>الجمع والطرح</h3>
+                <p>تحدي ٢٠ طابقاً في الجمع والطرح.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="darb.html">
+                <span class="tag">رياضيات</span>
+                <h3>تحدي الضرب</h3>
+                <p>تمرّن على جدول الضرب بسرعة ودقة.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="amliat.html">
+                <span class="tag">رياضيات</span>
+                <h3>ترتيب العمليات</h3>
+                <p>رتّب العمليات الحسابية بالشكل الصحيح.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="ksor.html">
+                <span class="tag">كسور</span>
+                <h3>جمع وطرح الكسور</h3>
+                <p>تدرّب على جمع الكسور وطرحها.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="bizza.html">
+                <span class="tag">كسور</span>
+                <h3>بيتزا الكسور</h3>
+                <p>تعلّم الكسور بطريقة شهية وممتعة.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="fokat.html">
+                <span class="tag">كسور</span>
+                <h3>صيد الكسر</h3>
+                <p>التقط الكسور الصحيحة قبل أن تفلت!</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="handse.html">
+                <span class="tag">هندسة</span>
+                <h3>لعبة الهندسة</h3>
+                <p>أشكال وهندسة للصف الرابع.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="eng.html">
+                <span class="tag">لغة</span>
+                <h3>معاني إنجليزية</h3>
+                <p>اكتشف معاني الكلمات الإنجليزية.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="eprne.html">
+                <span class="tag">لغة</span>
+                <h3>كلمات عربية</h3>
+                <p>تحدٍّ من ٢٠ طابقاً في الكلمات العربية.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+        </div>
+    </section>
+
+    <section id="fun">
+        <div class="section-head">
+            <h2>ألعاب ترفيهية</h2>
+            <p>سرعة، تركيز، ومتعة — اختر لعبتك وابدأ فوراً.</p>
+        </div>
+        <div class="games-grid">
+            <a class="game-link" href="xo.html">
+                <span class="tag">كلاسيكية</span>
+                <h3>إكس أو</h3>
+                <p>اللعبة الشهيرة XO ضد صديقك.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="thoban.html">
+                <span class="tag">كلاسيكية</span>
+                <h3>الثعبان</h3>
+                <p>لعبة الثعبان على طراز نوكيا.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="sodoku.html">
+                <span class="tag">أحجية</span>
+                <h3>سودوكو</h3>
+                <p>أربعة طوابق من تحدي السودوكو.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="m2.html">
+                <span class="tag">ذاكرة</span>
+                <h3>لعبة الذاكرة</h3>
+                <p>طابق البطاقات عبر الطوابق.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="mtaha.html">
+                <span class="tag">مغامرة</span>
+                <h3>متاهة الطوابق</h3>
+                <p>اعبر المتاهة طابقاً بعد طابق.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="subway.html">
+                <span class="tag">جري</span>
+                <h3>لعبة الجري</h3>
+                <p>اركض وتجنّب العقبات بأقصى سرعة.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="hadaf.html">
+                <span class="tag">دقة</span>
+                <h3>اضغط على الهدف</h3>
+                <p>اختبر سرعتك ودقّتك على الهدف.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+            <a class="game-link" href="football.html">
+                <span class="tag">رياضة</span>
+                <h3>كرة القدم</h3>
+                <p>سجّل الأهداف واستمتع بالمباراة.</p>
+                <span class="go">افتح اللعبة ←</span>
+            </a>
+        </div>
+    </section>
+
+    <section id="stars">
+        <div class="section-head">
+            <h2>صفحات المشاهير</h2>
+            <p>تعرّف على أساطير كرة القدم في صفحات خاصة.</p>
+        </div>
+        <div class="games-grid">
+            <a class="game-link" href="messi.html">
+                <span class="tag">كرة قدم</span>
+                <h3>ليونيل ميسي</h3>
+                <p>أسطورة كرة القدم العالمية.</p>
+                <span class="go">افتح الصفحة ←</span>
+            </a>
+            <a class="game-link" href="ronado.html">
+                <span class="tag">كرة قدم</span>
+                <h3>كريستيانو رونالدو</h3>
+                <p>صفحة CR7 الخاصة.</p>
+                <span class="go">افتح الصفحة ←</span>
+            </a>
+            <a class="game-link" href="rnaldeno.html">
+                <span class="tag">كرة قدم</span>
+                <h3>رونالدينيو</h3>
+                <p>ساحر كرة القدم في صفحة واحدة.</p>
+                <span class="go">افتح الصفحة ←</span>
+            </a>
+        </div>
+    </section>
+
+    <section id="pages">
+        <div class="section-head">
+            <h2>صفحات أخرى</h2>
+            <p>سيارات، تقنية، ومدرسة — صفحات إضافية من الموقع.</p>
+        </div>
+        <div class="games-grid">
+            <a class="game-link" href="adam.html">
+                <span class="tag">سيارات</span>
+                <h3>تسلا</h3>
+                <p>عالم السيارات الكهربائية.</p>
+                <span class="go">افتح الصفحة ←</span>
+            </a>
+            <a class="game-link" href="marss.html">
+                <span class="tag">سيارات</span>
+                <h3>مرسيدس بنز</h3>
+                <p>صفحة مرسيدس الخاصة.</p>
+                <span class="go">افتح الصفحة ←</span>
+            </a>
+            <a class="game-link" href="aefon.html">
+                <span class="tag">تقنية</span>
+                <h3>آيفون</h3>
+                <p>عالم الآيفون وتقنياته.</p>
+                <span class="go">افتح الصفحة ←</span>
+            </a>
+            <a class="game-link" href="skol.html">
+                <span class="tag">مدرسة</span>
+                <h3>مدرسة الخوارزمي</h3>
+                <p>صفحة المدرسة والمعلومات.</p>
+                <span class="go">افتح الصفحة ←</span>
+            </a>
+            <a class="game-link" href="naba.html">
+                <span class="tag">عائلة</span>
+                <h3>نبا أنس عنبوسي</h3>
+                <p>صفحة خاصة بنبا.</p>
+                <span class="go">افتح الصفحة ←</span>
+            </a>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="about-box">
+            <h2>مبرمج الموقع</h2>
+            <p>
+                أنا <strong>آدم عنبوسي</strong> هو مبرمج الموقع.
+                صمّمت هذه الألعاب والصفحات لأشارككم متعة التعلّم واللعب معاً.
+            </p>
+            <p>للتواصل عبر البريد الإلكتروني:</p>
+            <a class="email" href="mailto:adam.anabusy17@gmail.com">adam.anabusy17@gmail.com</a>
+        </div>
+    </section>
+
+    <footer>
+        © 2026 آدم عنبوسي — جميع الحقوق محفوظة
+    </footer>
+
+</body>
+</html>

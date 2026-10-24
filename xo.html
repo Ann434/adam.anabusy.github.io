@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>X O Game</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #222;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+        }
+
+        .game {
+            width: 330px;
+            margin: 50px auto;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            border: 0;
+            background: white;
+            border-radius: 10px;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cell:hover {
+            background: #ddd;
+        }
+
+        .x {
+            color: red;
+        }
+
+        .o {
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>❌ X O ⭕</h1>
+لعبة إكس أو برمجة ادم عنبوسي
+    <h2 id="status">دور X</h2>
+
+    <div class="board">
+
+        <button class="cell" data-index="0"></button>
+        <button class="cell" data-index="1"></button>
+        <button class="cell" data-index="2"></button>
+
+        <button class="cell" data-index="3"></button>
+        <button class="cell" data-index="4"></button>
+        <button class="cell" data-index="5"></button>
+
+        <button class="cell" data-index="6"></button>
+        <button class="cell" data-index="7"></button>
+        <button class="cell" data-index="8"></button>
+
+    </div>
+
+    <br>
+
+    <button onclick="restart()">إ عادة اللعب مجددن</button>
+شكرا لكم
+</div>
+
+<script>
+
+let board = ["", "", "", "", "", "", "", "", ""];
+
+let player = "X";
+
+let gameOver = false;
+
+const cells = document.querySelectorAll(".cell");
+
+const status = document.getElementById("status");
+
+
+cells.forEach(function(cell) {
+
+    cell.addEventListener("click", function() {
+
+        const index = Number(cell.dataset.index);
+
+        console.log("Clicked:", index);
+
+        if (gameOver) {
+            return;
+        }
+
+        if (board[index] !== "") {
+            return;
+        }
+
+        board[index] = player;
+
+        cell.textContent = player;
+
+        cell.classList.add(player.toLowerCase());
+
+        checkWinner();
+
+        if (!gameOver) {
+
+            player = player === "X" ? "O" : "X";
+
+            status.textContent = "دور " + player;
+        }
+
+    });
+
+});
+
+
+function checkWinner() {
+
+    const combinations = [
+
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+
+        [0, 4, 8],
+        [2, 4, 6]
+
+    ];
+
+
+    for (const combination of combinations) {
+
+        const a = combination[0];
+        const b = combination[1];
+        const c = combination[2];
+
+        if (
+            board[a] !== "" &&
+            board[a] === board[b] &&
+            board[a] === board[c]
+        ) {
+
+            status.textContent =
+                "🎉 اللاعب " + player + " فاز!";
+
+            gameOver = true;
+
+            return;
+        }
+    }
+
+
+    if (!board.includes("")) {
+
+        status.textContent = "🤝 تعادل!";
+
+        gameOver = true;
+    }
+
+}
+
+
+function restart() {
+
+    board = ["", "", "", "", "", "", "", "", ""];
+
+    player = "X";
+
+    gameOver = false;
+
+    status.textContent = "دور X";
+
+    cells.forEach(function(cell) {
+
+        cell.textContent = "";
+
+        cell.classList.remove("x");
+        cell.classList.remove("o");
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

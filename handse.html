@@ -1,0 +1,488 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة الهندسة - الصف الرابع</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game {
+    width: 95%;
+    max-width: 700px;
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+h1 {
+    color: #5b35a5;
+    margin-top: 0;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    background: #f0ebff;
+    padding: 15px;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.question {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin: 25px 0;
+}
+
+.shape {
+    font-size: 80px;
+    margin: 15px;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.answer {
+    border: none;
+    padding: 18px;
+    border-radius: 15px;
+    background: #eee8ff;
+    color: #4c2c91;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.answer:hover {
+    background: #ddd2ff;
+    transform: scale(1.03);
+}
+
+.correct {
+    background: #35b853 !important;
+    color: white !important;
+}
+
+.wrong {
+    background: #e74c3c !important;
+    color: white !important;
+}
+
+#nextBtn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px;
+    border: none;
+    border-radius: 15px;
+    background: #5b35a5;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    display: none;
+}
+
+#nextBtn:hover {
+    background: #452580;
+}
+
+#result {
+    display: none;
+}
+
+.result-score {
+    font-size: 35px;
+    color: #5b35a5;
+    font-weight: bold;
+}
+
+.stars {
+    font-size: 45px;
+    margin: 20px;
+}
+
+.restart {
+    width: 100%;
+    padding: 17px;
+    border: none;
+    border-radius: 15px;
+    background: #ff9800;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+@media(max-width: 550px) {
+    .answers {
+        grid-template-columns: 1fr;
+    }
+
+    .question {
+        font-size: 20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <div id="gameScreen">
+
+        <h1>📐 لعبة الهندسة</h1>
+
+        <div class="info">
+            <span>السؤال: <span id="number">1</span>/20</span>
+            <span>النقاط: <span id="score">0</span></span>
+        </div>
+
+        <div class="shape" id="shape">🔺</div>
+
+        <div class="question" id="question">
+            كم ضلعًا للمثلث؟
+        </div>
+
+        <div class="answers" id="answers"></div>
+
+        <button id="nextBtn" onclick="nextQuestion()">
+            السؤال التالي ➡️
+        </button>
+
+    </div>
+
+    <div id="result">
+
+        <h1>🎉 انتهت اللعبة!</h1>
+
+        <div class="stars" id="stars">⭐⭐⭐⭐⭐</div>
+
+        <p>نتيجتك:</p>
+
+        <div class="result-score">
+            <span id="finalScore">0</span> / 20
+        </div>
+
+        <p id="message" style="font-size:22px;"></p>
+
+        <button class="restart" onclick="restartGame()">
+            🔄 العب مرة أخرى
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+    shape: "🔺",
+    question: "كم ضلعًا للمثلث؟",
+    answers: ["2", "3", "4", "5"],
+    correct: "3"
+},
+
+{
+    shape: "⬛",
+    question: "كم ضلعًا للمربع؟",
+    answers: ["3", "4", "5", "6"],
+    correct: "4"
+},
+
+{
+    shape: "⬭",
+    question: "كم ضلعًا للمستطيل؟",
+    answers: ["2", "3", "4", "6"],
+    correct: "4"
+},
+
+{
+    shape: "⬠",
+    question: "كم ضلعًا للشكل الخماسي؟",
+    answers: ["4", "5", "6", "7"],
+    correct: "5"
+},
+
+{
+    shape: "⬢",
+    question: "كم ضلعًا للشكل السداسي؟",
+    answers: ["4", "5", "6", "8"],
+    correct: "6"
+},
+
+{
+    shape: "🔺",
+    question: "كم زاوية للمثلث؟",
+    answers: ["2", "3", "4", "5"],
+    correct: "3"
+},
+
+{
+    shape: "⬛",
+    question: "ما اسم الشكل الذي له 4 أضلاع متساوية؟",
+    answers: ["مثلث", "مربع", "دائرة", "خماسي"],
+    correct: "مربع"
+},
+
+{
+    shape: "▭",
+    question: "ما اسم الشكل الذي له 4 أضلاع وزاويته قائمة؟",
+    answers: ["مستطيل", "مثلث", "دائرة", "خماسي"],
+    correct: "مستطيل"
+},
+
+{
+    shape: "⚪",
+    question: "كم ضلعًا للدائرة؟",
+    answers: ["0", "1", "2", "4"],
+    correct: "0"
+},
+
+{
+    shape: "📐",
+    question: "كم درجة قياس الزاوية القائمة؟",
+    answers: ["45°", "90°", "120°", "180°"],
+    correct: "90°"
+},
+
+{
+    shape: "📏",
+    question: "أي أداة نستخدم لقياس طول الخط؟",
+    answers: ["مسطرة", "ميزان", "ساعة", "بوصلة"],
+    correct: "مسطرة"
+},
+
+{
+    shape: "📐",
+    question: "الزاوية التي قياسها أقل من 90° تسمى:",
+    answers: ["منفرجة", "قائمة", "حادة", "مستقيمة"],
+    correct: "حادة"
+},
+
+{
+    shape: "📐",
+    question: "الزاوية التي قياسها أكبر من 90° وأقل من 180° تسمى:",
+    answers: ["حادة", "منفرجة", "قائمة", "صفرية"],
+    correct: "منفرجة"
+},
+
+{
+    shape: "📏",
+    question: "إذا كان طول المستطيل 8 سم وعرضه 3 سم، فما محيطه؟",
+    answers: ["11 سم", "16 سم", "22 سم", "24 سم"],
+    correct: "22 سم"
+},
+
+{
+    shape: "⬛",
+    question: "إذا كان طول ضلع المربع 5 سم، فما محيطه؟",
+    answers: ["10 سم", "15 سم", "20 سم", "25 سم"],
+    correct: "20 سم"
+},
+
+{
+    shape: "📐",
+    question: "كم زاوية قائمة في المربع؟",
+    answers: ["1", "2", "3", "4"],
+    correct: "4"
+},
+
+{
+    shape: "🔺",
+    question: "مثلث أضلاعه الثلاثة متساوية يسمى:",
+    answers: ["مثلث متساوي الأضلاع", "مربع", "مستطيل", "دائرة"],
+    correct: "مثلث متساوي الأضلاع"
+},
+
+{
+    shape: "⬛",
+    question: "ما الشكل الذي له 4 أضلاع متساوية و4 زوايا قائمة؟",
+    answers: ["مثلث", "مربع", "دائرة", "خماسي"],
+    correct: "مربع"
+},
+
+{
+    shape: "📐",
+    question: "كم درجة قياس الزاوية المستقيمة؟",
+    answers: ["45°", "90°", "180°", "360°"],
+    correct: "180°"
+},
+
+{
+    shape: "🔷",
+    question: "ما اسم الشكل الذي له 4 أضلاع؟",
+    answers: ["رباعي", "مثلث", "خماسي", "سداسي"],
+    correct: "رباعي"
+}
+
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+function loadQuestion() {
+
+    answered = false;
+
+    let q = questions[current];
+
+    document.getElementById("number").textContent = current + 1;
+    document.getElementById("score").textContent = score;
+    document.getElementById("shape").textContent = q.shape;
+    document.getElementById("question").textContent = q.question;
+
+    document.getElementById("nextBtn").style.display = "none";
+
+    let container = document.getElementById("answers");
+    container.innerHTML = "";
+
+    let shuffled = [...q.answers].sort(() => Math.random() - 0.5);
+
+    shuffled.forEach(answer => {
+
+        let button = document.createElement("button");
+
+        button.className = "answer";
+        button.textContent = answer;
+
+        button.onclick = function() {
+            checkAnswer(button, answer);
+        };
+
+        container.appendChild(button);
+    });
+}
+
+function checkAnswer(button, answer) {
+
+    if (answered) return;
+
+    answered = true;
+
+    let correct = questions[current].correct;
+
+    let buttons = document.querySelectorAll(".answer");
+
+    buttons.forEach(btn => {
+
+        btn.disabled = true;
+
+        if (btn.textContent === correct) {
+            btn.classList.add("correct");
+        }
+
+    });
+
+    if (answer === correct) {
+
+        button.classList.add("correct");
+        score++;
+
+    } else {
+
+        button.classList.add("wrong");
+
+    }
+
+    document.getElementById("score").textContent = score;
+
+    document.getElementById("nextBtn").style.display = "block";
+}
+
+function nextQuestion() {
+
+    current++;
+
+    if (current >= questions.length) {
+
+        showResult();
+
+    } else {
+
+        loadQuestion();
+
+    }
+}
+
+function showResult() {
+
+    document.getElementById("gameScreen").style.display = "none";
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("finalScore").textContent = score;
+
+    let stars;
+    let message;
+
+    if (score >= 18) {
+
+        stars = "⭐⭐⭐⭐⭐";
+        message = "ممتاز! أنت بطل الهندسة 🏆";
+
+    } else if (score >= 14) {
+
+        stars = "⭐⭐⭐⭐";
+        message = "رائع! أداء ممتاز 👏";
+
+    } else if (score >= 10) {
+
+        stars = "⭐⭐⭐";
+        message = "جيد جدًا! استمر في التدريب 💪";
+
+    } else {
+
+        stars = "⭐⭐";
+        message = "حاول مرة أخرى وستصبح أفضل 📚";
+
+    }
+
+    document.getElementById("stars").textContent = stars;
+    document.getElementById("message").textContent = message;
+}
+
+function restartGame() {
+
+    current = 0;
+    score = 0;
+
+    document.getElementById("result").style.display = "none";
+    document.getElementById("gameScreen").style.display = "block";
+
+    loadQuestion();
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
+

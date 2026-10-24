@@ -1,0 +1,913 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🎈 صيد الكسر</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Tahoma, sans-serif;
+    background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.game {
+    width: 100%;
+    max-width: 900px;
+    margin: auto;
+    text-align: center;
+    padding: 15px;
+}
+
+h1 {
+    color: #17365d;
+    margin: 5px;
+    font-size: 38px;
+}
+
+.info {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 10px;
+}
+
+.info-box {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    box-shadow: 0 3px 8px rgba(0,0,0,.2);
+}
+
+.question {
+    background: white;
+    border-radius: 15px;
+    padding: 12px;
+    font-size: 23px;
+    font-weight: bold;
+    margin: 10px auto;
+    width: 90%;
+    max-width: 650px;
+}
+
+/* =========================
+   منطقة اللعب
+========================= */
+
+#gameArea {
+    position: relative;
+    width: 95%;
+    max-width: 850px;
+    height: 600px;
+    margin: auto;
+    background:
+        linear-gradient(
+            to bottom,
+            #87ceeb 0%,
+            #bdefff 70%,
+            #8bd17c 70%,
+            #5eaa4f 100%
+        );
+
+    border: 5px solid white;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,.3);
+}
+
+/* السحاب */
+
+.cloud {
+    position: absolute;
+    color: white;
+    font-size: 60px;
+    opacity: .8;
+}
+
+/* =========================
+   الفقاعات
+========================= */
+
+.bubble {
+    position: absolute;
+
+    width: 110px;
+    height: 110px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    user-select: none;
+
+    border: 4px solid rgba(255,255,255,.8);
+
+    box-shadow:
+        inset -10px -10px 20px rgba(0,0,0,.15),
+        inset 10px 10px 15px rgba(255,255,255,.4),
+        0 5px 12px rgba(0,0,0,.2);
+
+    transition: transform .15s;
+}
+
+.bubble:hover {
+    transform: scale(1.12);
+}
+
+/* ألوان الفقاعات */
+
+.color1 {
+    background: #ff5c8a;
+}
+
+.color2 {
+    background: #9b59b6;
+}
+
+.color3 {
+    background: #3498db;
+}
+
+.color4 {
+    background: #f39c12;
+}
+
+.color5 {
+    background: #16a085;
+}
+
+.color6 {
+    background: #e74c3c;
+}
+
+/* =========================
+   الرسالة
+========================= */
+
+#message {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background: white;
+
+    padding: 12px 25px;
+
+    border-radius: 15px;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    z-index: 100;
+}
+
+/* =========================
+   زر التالي
+========================= */
+
+#nextButton,
+#restartButton {
+
+    display: none;
+
+    border: none;
+
+    padding: 15px 35px;
+
+    margin: 10px;
+
+    border-radius: 15px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    color: white;
+
+    cursor: pointer;
+}
+
+#nextButton {
+    background: #27ae60;
+}
+
+#restartButton {
+    background: #8e44ad;
+}
+
+#nextButton:hover,
+#restartButton:hover {
+    transform: scale(1.05);
+}
+
+/* =========================
+   شاشة النهاية
+========================= */
+
+#finish {
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.65);
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 500;
+}
+
+.finish-box {
+    background: white;
+
+    padding: 35px;
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    width: 90%;
+    max-width: 500px;
+}
+
+.finish-box h2 {
+    color: #27ae60;
+    font-size: 35px;
+}
+
+.finish-box p {
+    font-size: 24px;
+}
+
+/* الهاتف */
+
+@media(max-width:600px) {
+
+    h1 {
+        font-size: 30px;
+    }
+
+    #gameArea {
+        height: 500px;
+    }
+
+    .bubble {
+        width: 85px;
+        height: 85px;
+        font-size: 18px;
+    }
+
+    .question {
+        font-size: 19px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>🎈 صيد الكسر 🏹</h1>
+
+    <div class="info">
+
+        <div class="info-box">
+            🏠 المستوى:
+            <span id="level">1</span> / 20
+        </div>
+
+        <div class="info-box">
+            ⭐ النقاط:
+            <span id="score">0</span>
+        </div>
+
+        <div class="info-box">
+            ❤️ المحاولات:
+            <span id="lives">3</span>
+        </div>
+
+    </div>
+
+    <div class="question" id="question">
+        اضغط على الكسر الصحيح!
+    </div>
+
+    <div id="gameArea">
+
+        <div class="cloud" style="top:30px; left:60px;">
+            ☁️
+        </div>
+
+        <div class="cloud" style="top:90px; right:70px;">
+            ☁️
+        </div>
+
+        <div id="message"></div>
+
+    </div>
+
+    <button id="nextButton">
+        ➡️ المستوى التالي
+    </button>
+
+    <button id="restartButton">
+        🔄 إعادة اللعب
+    </button>
+
+</div>
+
+
+<!-- شاشة النهاية -->
+
+<div id="finish">
+
+    <div class="finish-box">
+
+        <h2>🏆 مبروك!</h2>
+
+        <p id="finalScore"></p>
+
+        <button id="restartFinish"
+                style="
+                background:#8e44ad;
+                color:white;
+                border:none;
+                padding:15px 35px;
+                border-radius:15px;
+                font-size:22px;
+                font-weight:bold;
+                cursor:pointer;
+                ">
+            🔄 العب من جديد
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================
+   مستويات اللعبة
+===================================== */
+
+const levels = [
+
+    { answer: "1 / 2", options: ["1 / 2", "1 / 3", "2 / 3", "1 / 4"] },
+
+    { answer: "1 / 3", options: ["1 / 2", "1 / 3", "2 / 3", "3 / 4"] },
+
+    { answer: "2 / 3", options: ["1 / 3", "2 / 3", "1 / 4", "3 / 5"] },
+
+    { answer: "3 / 4", options: ["1 / 4", "2 / 4", "3 / 4", "4 / 5"] },
+
+    { answer: "2 / 5", options: ["1 / 5", "2 / 5", "3 / 5", "4 / 5"] },
+
+    { answer: "3 / 5", options: ["1 / 5", "2 / 5", "3 / 5", "4 / 5"] },
+
+    { answer: "4 / 5", options: ["1 / 5", "2 / 5", "4 / 5", "3 / 4"] },
+
+    { answer: "1 / 6", options: ["1 / 6", "2 / 6", "3 / 6", "1 / 5"] },
+
+    { answer: "5 / 6", options: ["1 / 6", "4 / 6", "5 / 6", "2 / 6"] },
+
+    { answer: "2 / 7", options: ["1 / 7", "2 / 7", "3 / 7", "4 / 7"] },
+
+    { answer: "3 / 7", options: ["2 / 7", "3 / 7", "4 / 7", "5 / 7"] },
+
+    { answer: "5 / 8", options: ["3 / 8", "4 / 8", "5 / 8", "7 / 8"] },
+
+    { answer: "7 / 8", options: ["5 / 8", "6 / 8", "7 / 8", "3 / 8"] },
+
+    { answer: "2 / 9", options: ["1 / 9", "2 / 9", "4 / 9", "5 / 9"] },
+
+    { answer: "4 / 9", options: ["2 / 9", "3 / 9", "4 / 9", "7 / 9"] },
+
+    { answer: "5 / 10", options: ["2 / 10", "4 / 10", "5 / 10", "8 / 10"] },
+
+    { answer: "7 / 10", options: ["3 / 10", "5 / 10", "7 / 10", "9 / 10"] },
+
+    { answer: "3 / 12", options: ["2 / 12", "3 / 12", "5 / 12", "7 / 12"] },
+
+    { answer: "8 / 12", options: ["4 / 12", "6 / 12", "8 / 12", "10 / 12"] },
+
+    { answer: "11 / 12", options: ["7 / 12", "8 / 12", "10 / 12", "11 / 12"] }
+
+];
+
+
+/* =====================================
+   متغيرات اللعبة
+===================================== */
+
+let currentLevel = 0;
+
+let score = 0;
+
+let lives = 3;
+
+let correctFound = false;
+
+let bubbleTimer;
+
+
+/* =====================================
+   العناصر
+===================================== */
+
+const gameArea =
+    document.getElementById("gameArea");
+
+const question =
+    document.getElementById("question");
+
+const levelText =
+    document.getElementById("level");
+
+const scoreText =
+    document.getElementById("score");
+
+const livesText =
+    document.getElementById("lives");
+
+const message =
+    document.getElementById("message");
+
+const nextButton =
+    document.getElementById("nextButton");
+
+const restartButton =
+    document.getElementById("restartButton");
+
+
+/* =====================================
+   خلط المصفوفة
+===================================== */
+
+function shuffle(array) {
+
+    return array.sort(() => Math.random() - 0.5);
+
+}
+
+
+/* =====================================
+   تحميل المستوى
+===================================== */
+
+function loadLevel() {
+
+    clearInterval(bubbleTimer);
+
+    correctFound = false;
+
+    message.textContent = "";
+
+    nextButton.style.display = "none";
+
+    restartButton.style.display = "none";
+
+    levelText.textContent =
+        currentLevel + 1;
+
+    scoreText.textContent =
+        score;
+
+    livesText.textContent =
+        lives;
+
+
+    const data =
+        levels[currentLevel];
+
+
+    question.textContent =
+        "🎯 اصطد الفقاعة التي تحمل الكسر: " +
+        data.answer;
+
+
+    /*
+       إزالة الفقاعات القديمة
+    */
+
+    const oldBubbles =
+        gameArea.querySelectorAll(".bubble");
+
+    oldBubbles.forEach(function(bubble) {
+
+        bubble.remove();
+
+    });
+
+
+    /*
+       إنشاء الفقاعات
+    */
+
+    let options =
+        shuffle([...data.options]);
+
+
+    options.forEach(function(option, index) {
+
+        createBubble(
+            option,
+            index
+        );
+
+    });
+
+}
+
+
+/* =====================================
+   إنشاء فقاعة
+===================================== */
+
+function createBubble(text, index) {
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "bubble color" +
+        ((index % 6) + 1);
+
+    bubble.textContent =
+        text;
+
+
+    /*
+       موقع عشوائي
+    */
+
+    const maxX =
+        gameArea.clientWidth - 120;
+
+    const maxY =
+        gameArea.clientHeight - 130;
+
+
+    let x =
+        Math.random() * Math.max(maxX, 10);
+
+    let y =
+        Math.random() * Math.max(maxY, 10);
+
+
+    bubble.style.left =
+        x + "px";
+
+    bubble.style.top =
+        y + "px";
+
+
+    gameArea.appendChild(bubble);
+
+
+    /*
+       حركة الفقاعة
+    */
+
+    let dx =
+        (Math.random() * 2 - 1) * 1.5;
+
+    let dy =
+        (Math.random() * 2 - 1) * 1.5;
+
+
+    function move() {
+
+        if (!bubble.parentElement) {
+            return;
+        }
+
+
+        let left =
+            parseFloat(bubble.style.left);
+
+        let top =
+            parseFloat(bubble.style.top);
+
+
+        let width =
+            gameArea.clientWidth;
+
+        let height =
+            gameArea.clientHeight;
+
+
+        if (
+            left <= 0 ||
+            left >= width - 115
+        ) {
+
+            dx = -dx;
+
+        }
+
+
+        if (
+            top <= 0 ||
+            top >= height - 115
+        ) {
+
+            dy = -dy;
+
+        }
+
+
+        left += dx;
+
+        top += dy;
+
+
+        bubble.style.left =
+            left + "px";
+
+        bubble.style.top =
+            top + "px";
+
+
+        requestAnimationFrame(move);
+
+    }
+
+    move();
+
+
+    /*
+       عند الضغط على الفقاعة
+    */
+
+    bubble.addEventListener(
+        "click",
+        function() {
+
+            checkBubble(
+                bubble,
+                text
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================
+   فحص الفقاعة
+===================================== */
+
+function checkBubble(bubble, text) {
+
+    if (correctFound) {
+        return;
+    }
+
+
+    const correct =
+        levels[currentLevel].answer;
+
+
+    /*
+       إجابة صحيحة
+    */
+
+    if (text === correct) {
+
+        correctFound = true;
+
+        score += 10;
+
+        scoreText.textContent =
+            score;
+
+
+        bubble.style.transform =
+            "scale(1.4)";
+
+
+        message.textContent =
+            "🎉 أحسنت! اصطدت الكسر الصحيح! +10";
+
+
+        /*
+           إزالة باقي الفقاعات
+        */
+
+        const bubbles =
+            gameArea.querySelectorAll(".bubble");
+
+
+        bubbles.forEach(function(b) {
+
+            b.style.pointerEvents =
+                "none";
+
+            if (b !== bubble) {
+
+                b.style.opacity =
+                    "0.3";
+
+            }
+
+        });
+
+
+        if (
+            currentLevel <
+            levels.length - 1
+        ) {
+
+            nextButton.style.display =
+                "inline-block";
+
+        } else {
+
+            setTimeout(
+                finishGame,
+                800
+            );
+
+        }
+
+    }
+
+
+    /*
+       إجابة خاطئة
+    */
+
+    else {
+
+        lives--;
+
+        livesText.textContent =
+            lives;
+
+
+        bubble.style.transform =
+            "scale(0)";
+
+        bubble.style.opacity =
+            "0";
+
+
+        message.textContent =
+            "❌ ليست هذه! حاول مرة أخرى";
+
+
+        if (lives <= 0) {
+
+            gameOver();
+
+        }
+
+    }
+
+}
+
+
+/* =====================================
+   المستوى التالي
+===================================== */
+
+nextButton.addEventListener(
+    "click",
+    function() {
+
+        currentLevel++;
+
+        loadLevel();
+
+    }
+);
+
+
+/* =====================================
+   انتهاء المحاولات
+===================================== */
+
+function gameOver() {
+
+    clearInterval(bubbleTimer);
+
+    correctFound = true;
+
+
+    const bubbles =
+        gameArea.querySelectorAll(".bubble");
+
+
+    bubbles.forEach(function(b) {
+
+        b.style.pointerEvents =
+            "none";
+
+    });
+
+
+    message.textContent =
+        "💔 انتهت المحاولات!";
+
+
+    restartButton.style.display =
+        "inline-block";
+
+}
+
+
+/* =====================================
+   نهاية اللعبة
+===================================== */
+
+function finishGame() {
+
+    document.getElementById("finalScore").textContent =
+        "⭐ حصلت على " +
+        score +
+        " نقطة من أصل " +
+        (levels.length * 10) +
+        " نقطة!";
+
+
+    document.getElementById("finish").style.display =
+        "flex";
+
+}
+
+
+/* =====================================
+   إعادة اللعب
+===================================== */
+
+function restartGame() {
+
+    currentLevel = 0;
+
+    score = 0;
+
+    lives = 3;
+
+    document.getElementById("finish").style.display =
+        "none";
+
+    loadLevel();
+
+}
+
+
+restartButton.addEventListener(
+    "click",
+    restartGame
+);
+
+
+document.getElementById("restartFinish")
+    .addEventListener(
+        "click",
+        restartGame
+    );
+
+
+/* =====================================
+   بدء اللعبة
+===================================== */
+
+loadLevel();
+
+</script>
+
+</body>
+</html>
+```

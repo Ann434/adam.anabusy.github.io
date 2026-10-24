@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>لعبة جمع وطرح الكسور</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #2196f3, #673ab7);
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game {
+    width: 95%;
+    max-width: 700px;
+
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 25px;
+
+    text-align: center;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+h1 {
+    color: #1565c0;
+    margin-top: 0;
+    font-size: 32px;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+
+    background: #e3f2fd;
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+.question {
+    direction: ltr;
+
+    font-size: 48px;
+
+    font-weight: bold;
+
+    margin: 40px 0;
+
+    color: #222;
+}
+
+.answers {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 18px;
+}
+
+.answer {
+    min-height: 85px;
+
+    border: 3px solid #1976d2;
+
+    border-radius: 18px;
+
+    background: #e3f2fd;
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.answer:hover {
+    transform: scale(1.05);
+
+    background: #bbdefb;
+}
+
+.answer:disabled {
+    cursor: default;
+}
+
+.correct {
+    background: #4caf50 !important;
+
+    color: white;
+
+    border-color: #2e7d32;
+}
+
+.wrong {
+    background: #f44336 !important;
+
+    color: white;
+
+    border-color: #c62828;
+}
+
+#message {
+    min-height: 50px;
+
+    margin: 20px 0;
+
+    font-size: 22px;
+
+    font-weight: bold;
+}
+
+.next,
+.restart {
+    display: none;
+
+    border: none;
+
+    padding: 15px 30px;
+
+    border-radius: 15px;
+
+    background: #1565c0;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.next:hover,
+.restart:hover {
+    background: #0d47a1;
+}
+
+.win {
+    color: #4caf50;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    line-height: 1.8;
+}
+
+@media (max-width: 500px) {
+
+    .question {
+        font-size: 35px;
+    }
+
+    .answer {
+        font-size: 23px;
+
+        min-height: 70px;
+    }
+
+    .info {
+        font-size: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>🧮 جمع وطرح الكسور</h1>
+
+    <div class="info">
+
+        <span>
+            ⭐ النقاط:
+            <span id="score">0</span>
+        </span>
+
+        <span>
+            ❓ السؤال:
+            <span id="number">1</span>/20
+        </span>
+
+    </div>
+
+    <div
+        class="question"
+        id="question">
+    </div>
+
+    <div
+        class="answers"
+        id="answers">
+    </div>
+
+    <div id="message"></div>
+
+    <button
+        class="next"
+        id="nextBtn"
+        onclick="nextQuestion()">
+
+        السؤال التالي ➡️
+
+    </button>
+
+    <button
+        class="restart"
+        id="restartBtn"
+        onclick="restartGame()">
+
+        🔄 العب مرة أخرى
+
+    </button>
+
+</div>
+
+
+<script>
+
+/* =========================
+   متغيرات اللعبة
+========================= */
+
+let questionNumber = 1;
+
+let score = 0;
+
+let correctNumerator = 0;
+
+let correctDenominator = 1;
+
+let answered = false;
+
+
+/* =========================
+   القاسم المشترك الأكبر
+========================= */
+
+function gcd(a, b) {
+
+    while (b !== 0) {
+
+        let temp = b;
+
+        b = a % b;
+
+        a = temp;
+    }
+
+    return Math.abs(a);
+}
+
+
+/* =========================
+   تبسيط الكسر
+========================= */
+
+function simplify(numerator, denominator) {
+
+    if (numerator === 0) {
+
+        return {
+            n: 0,
+            d: 1
+        };
+    }
+
+    let divisor =
+        gcd(numerator, denominator);
+
+    return {
+        n: numerator / divisor,
+        d: denominator / divisor
+    };
+}
+
+
+/* =========================
+   إنشاء كسر بنظام البسط/المقام
+========================= */
+
+function fractionText(numerator, denominator) {
+
+    return numerator + "/" + denominator;
+}
+
+
+/* =========================
+   إنشاء سؤال جديد
+========================= */
+
+function createQuestion() {
+
+    answered = false;
+
+    document.getElementById("message")
+        .textContent = "";
+
+    document.getElementById("nextBtn")
+        .style.display = "none";
+
+    document.getElementById("answers")
+        .innerHTML = "";
+
+
+    /*
+       اختيار مقام مشترك
+       مثل 5 أو 6 أو 8 أو 10...
+    */
+
+    let denominator =
+        Math.floor(Math.random() * 9) + 2;
+
+
+    /*
+       البسط الأول
+    */
+
+    let numerator1 =
+        Math.floor(
+            Math.random() *
+            (denominator - 1)
+        ) + 1;
+
+
+    /*
+       البسط الثاني
+    */
+
+    let numerator2 =
+        Math.floor(
+            Math.random() *
+            (denominator - 1)
+        ) + 1;
+
+
+    /*
+       اختيار جمع أو طرح
+    */
+
+    let operation;
+
+    if (Math.random() < 0.5) {
+
+        operation = "+";
+
+    } else {
+
+        operation = "-";
+
+
+        /*
+           منع النتيجة السالبة
+        */
+
+        if (numerator2 > numerator1) {
+
+            let temp = numerator1;
+
+            numerator1 = numerator2;
+
+            numerator2 = temp;
+        }
+    }
+
+
+    /*
+       حساب الإجابة
+    */
+
+    let resultNumerator;
+
+    if (operation === "+") {
+
+        resultNumerator =
+            numerator1 + numerator2;
+
+    } else {
+
+        resultNumerator =
+            numerator1 - numerator2;
+    }
+
+
+    /*
+       تبسيط الإجابة
+    */
+
+    let result =
+        simplify(
+            resultNumerator,
+            denominator
+        );
+
+
+    correctNumerator = result.n;
+
+    correctDenominator = result.d;
+
+
+    /*
+       عرض السؤال
+    */
+
+    document.getElementById("question")
+        .textContent =
+
+        numerator1 +
+        "/" +
+        denominator +
+        " " +
+        operation +
+        " " +
+        numerator2 +
+        "/" +
+        denominator +
+        " = ؟";
+
+
+    createAnswers();
+}
+
+
+/* =========================
+   إنشاء الإجابات الأربعة
+========================= */
+
+function createAnswers() {
+
+    let options = [];
+
+
+    /*
+       الإجابة الصحيحة
+    */
+
+    options.push({
+        n: correctNumerator,
+        d: correctDenominator
+    });
+
+
+    /*
+       إنشاء 3 إجابات خاطئة
+    */
+
+    while (options.length < 4) {
+
+        let wrongNumerator =
+            correctNumerator +
+            Math.floor(
+                Math.random() * 7
+            ) - 3;
+
+
+        if (wrongNumerator < 0) {
+
+            wrongNumerator = 0;
+        }
+
+
+        let wrongDenominator =
+            correctDenominator;
+
+
+        let wrong =
+            simplify(
+                wrongNumerator,
+                wrongDenominator
+            );
+
+
+        /*
+           التأكد من عدم التكرار
+        */
+
+        let exists = options.some(
+            item =>
+                item.n === wrong.n &&
+                item.d === wrong.d
+        );
+
+
+        if (!exists) {
+
+            options.push(wrong);
+        }
+    }
+
+
+    /*
+       خلط الإجابات
+    */
+
+    options.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    /*
+       إنشاء الأزرار
+    */
+
+    options.forEach(option => {
+
+        let button =
+            document.createElement("button");
+
+
+        button.className = "answer";
+
+
+        button.textContent =
+            fractionText(
+                option.n,
+                option.d
+            );
+
+
+        button.onclick = function() {
+
+            checkAnswer(
+                button,
+                option
+            );
+        };
+
+
+        document
+            .getElementById("answers")
+            .appendChild(button);
+    });
+}
+
+
+/* =========================
+   فحص الإجابة
+========================= */
+
+function checkAnswer(button, answer) {
+
+    if (answered) {
+
+        return;
+    }
+
+    answered = true;
+
+
+    let buttons =
+        document.querySelectorAll(
+            ".answer"
+        );
+
+
+    /*
+       تعطيل الإجابات
+    */
+
+    buttons.forEach(btn => {
+
+        btn.disabled = true;
+
+    });
+
+
+    /*
+       التحقق من الإجابة
+    */
+
+    if (
+        answer.n === correctNumerator &&
+        answer.d === correctDenominator
+    ) {
+
+        button.classList.add(
+            "correct"
+        );
+
+
+        score += 10;
+
+
+        document.getElementById("score")
+            .textContent = score;
+
+
+        document.getElementById("message")
+            .textContent =
+            "🎉 إجابة صحيحة! +10 نقاط";
+
+
+        document.getElementById("message")
+            .style.color = "#4caf50";
+
+    } else {
+
+        button.classList.add(
+            "wrong"
+        );
+
+
+        document.getElementById("message")
+            .innerHTML =
+
+            "❌ إجابة خاطئة!<br>" +
+
+            "الإجابة الصحيحة: " +
+
+            correctNumerator +
+            "/" +
+            correctDenominator;
+
+
+        document.getElementById("message")
+            .style.color = "#f44336";
+
+
+        /*
+           تلوين الإجابة الصحيحة
+        */
+
+        buttons.forEach(btn => {
+
+            if (
+                btn.textContent ===
+                correctNumerator +
+                "/" +
+                correctDenominator
+            ) {
+
+                btn.classList.add(
+                    "correct"
+                );
+            }
+
+        });
+    }
+
+
+    /*
+       السؤال الأخير
+    */
+
+    if (questionNumber === 20) {
+
+        finishGame();
+
+    } else {
+
+        document.getElementById("nextBtn")
+            .style.display =
+            "inline-block";
+    }
+}
+
+
+/* =========================
+   السؤال التالي
+========================= */
+
+function nextQuestion() {
+
+    questionNumber++;
+
+
+    document.getElementById("number")
+        .textContent =
+        questionNumber;
+
+
+    createQuestion();
+}
+
+
+/* =========================
+   نهاية اللعبة
+========================= */
+
+function finishGame() {
+
+    document.getElementById("question")
+        .textContent =
+        "🎊 مبروك! 🎊";
+
+
+    document.getElementById("answers")
+        .innerHTML = "";
+
+
+    document.getElementById("message")
+        .innerHTML =
+
+        `<div class="win">
+
+            🏆 أكملت 20 سؤالًا! 🏆
+
+            <br>
+
+            ⭐ مجموع نقاطك:
+            ${score}
+
+            <br>
+
+            أحسنت! 👏
+
+        </div>`;
+
+
+    document.getElementById("nextBtn")
+        .style.display = "none";
+
+
+    document.getElementById("restartBtn")
+        .style.display =
+        "inline-block";
+}
+
+
+/* =========================
+   إعادة اللعبة
+========================= */
+
+function restartGame() {
+
+    questionNumber = 1;
+
+    score = 0;
+
+
+    document.getElementById("score")
+        .textContent = "0";
+
+
+    document.getElementById("number")
+        .textContent = "1";
+
+
+    document.getElementById("restartBtn")
+        .style.display = "none";
+
+
+    createQuestion();
+}
+
+
+/* =========================
+   تشغيل اللعبة
+========================= */
+
+createQuestion();
+
+</script>
+
+</body>
+</html>
