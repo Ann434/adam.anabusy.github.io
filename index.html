@@ -11,15 +11,15 @@
     <meta name="language" content="Arabic">
     <meta name="theme-color" content="#ff5a3d">
     <link rel="canonical" href="./index.html">
-    <link rel="icon" type="image/jpeg" href="adam.jpg">
-    <link rel="apple-touch-icon" href="adam.jpg">
+    <link rel="icon" type="image/jpeg" href="images/adam.jpg">
+    <link rel="apple-touch-icon" href="images/adam.jpg">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:locale" content="ar_AR">
     <meta property="og:title" content="آدم عنبوسي | عالم الألعاب والتعلّم">
     <meta property="og:description" content="ألعاب تعليمية وترفيهية من برمجة آدم عنبوسي — رياضيات، لغة، هندسة، والمزيد.">
-    <meta property="og:image" content="adam.jpg">
+    <meta property="og:image" content="images/adam.jpg">
     <meta property="og:image:alt" content="آدم عنبوسي مبرمج الموقع أمام حاسوبه">
     <meta property="og:site_name" content="آدم عنبوسي">
 
@@ -27,7 +27,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="آدم عنبوسي | عالم الألعاب والتعلّم">
     <meta name="twitter:description" content="ألعاب تعليمية وترفيهية من برمجة آدم عنبوسي.">
-    <meta name="twitter:image" content="adam.jpg">
+    <meta name="twitter:image" content="images/adam.jpg">
     <meta name="twitter:image:alt" content="آدم عنبوسي مبرمج الموقع أمام حاسوبه">
 
     <script type="application/ld+json">
@@ -41,10 +41,13 @@
         "@type": "Person",
         "name": "آدم عنبوسي",
         "email": "adam.anabusy17@gmail.com",
-        "image": "adam.jpg",
-        "jobTitle": "مبرمج الموقع"
+        "image": "images/adam.jpg",
+        "jobTitle": "مبرمج الموقع",
+        "sameAs": [
+          "https://www.youtube.com/@adamfootballlearn"
+        ]
       },
-      "image": "adam.jpg"
+      "image": "images/adam.jpg"
     }
     </script>
 
@@ -379,22 +382,42 @@
             font-weight: 700;
         }
 
-        .email {
+        .contact-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .email,
+        .youtube {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            margin-top: 8px;
             padding: 14px 20px;
-            background: var(--ink);
-            color: var(--white);
             border-radius: 12px;
             font-weight: 700;
             width: fit-content;
             transition: transform 0.25s ease, background 0.25s ease;
         }
 
+        .email {
+            background: var(--ink);
+            color: var(--white);
+        }
+
         .email:hover {
             background: var(--coral);
+            transform: translateY(-2px);
+        }
+
+        .youtube {
+            background: #c4302b;
+            color: var(--white);
+        }
+
+        .youtube:hover {
+            background: #9e1f1a;
             transform: translateY(-2px);
         }
 
@@ -482,6 +505,7 @@
             <a href="#fun">ترفيهية</a>
             <a href="#stars">مشاهير</a>
             <a href="#pages">صفحات</a>
+            <a href="https://www.youtube.com/@adamfootballlearn" target="_blank" rel="noopener noreferrer">يوتيوب</a>
             <a href="#about">تواصل</a>
         </nav>
     </header>
@@ -489,7 +513,7 @@
     <section class="hero">
         <img
             class="hero-photo"
-            src="adam.jpg"
+            src="images/adam.jpg"
             alt="آدم عنبوسي مبرمج الموقع أمام حاسوبه وهو يبرمج الألعاب"
             width="1200"
             height="1600"
@@ -690,6 +714,12 @@
                 <p>صفحة خاصة بنبا.</p>
                 <span class="go">افتح الصفحة ←</span>
             </a>
+            <a class="game-link" href="https://www.youtube.com/@adamfootballlearn" target="_blank" rel="noopener noreferrer">
+                <span class="tag">يوتيوب</span>
+                <h3>قناة آدم على يوتيوب</h3>
+                <p>تابع فيديوهات التعلّم وكرة القدم.</p>
+                <span class="go">افتح القناة ←</span>
+            </a>
         </div>
     </section>
 
@@ -697,7 +727,7 @@
         <div class="about-layout">
             <img
                 class="about-photo"
-                src="adam.jpg"
+                src="images/adam.jpg"
                 alt="آدم عنبوسي مبرمج الموقع"
                 width="560"
                 height="750"
@@ -709,8 +739,11 @@
                     أنا <strong>آدم عنبوسي</strong> هو مبرمج الموقع.
                     صمّمت هذه الألعاب والصفحات لأشارككم متعة التعلّم واللعب معاً.
                 </p>
-                <p>للتواصل عبر البريد الإلكتروني:</p>
-                <a class="email" href="mailto:adam.anabusy17@gmail.com">adam.anabusy17@gmail.com</a>
+                <p>للتواصل ومتابعة القناة:</p>
+                <div class="contact-links">
+                    <a class="email" href="mailto:adam.anabusy17@gmail.com">adam.anabusy17@gmail.com</a>
+                    <a class="youtube" href="https://www.youtube.com/@adamfootballlearn" target="_blank" rel="noopener noreferrer">يوتيوب: @adamfootballlearn</a>
+                </div>
             </div>
         </div>
     </section>
