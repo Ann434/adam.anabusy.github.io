@@ -3,7 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>آدم عنبوسي | عالم الألعاب</title>
+    <title>آدم عنبوسي | عالم الألعاب والتعلّم</title>
+    <meta name="description" content="موقع آدم عنبوسي — ألعاب تعليمية وترفيهية في الرياضيات واللغة والهندسة. أنا آدم عنبوسي مبرمج الموقع. تواصل: adam.anabusy17@gmail.com">
+    <meta name="keywords" content="آدم عنبوسي, ألعاب تعليمية, ألعاب رياضيات, كسور, هندسة, إكس أو, سودوكو, ألعاب أطفال, موقع آدم">
+    <meta name="author" content="آدم عنبوسي">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="Arabic">
+    <meta name="theme-color" content="#ff5a3d">
+    <link rel="canonical" href="./index.html">
+    <link rel="icon" type="image/jpeg" href="images/adam.jpg">
+    <link rel="apple-touch-icon" href="images/adam.jpg">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ar_AR">
+    <meta property="og:title" content="آدم عنبوسي | عالم الألعاب والتعلّم">
+    <meta property="og:description" content="ألعاب تعليمية وترفيهية من برمجة آدم عنبوسي — رياضيات، لغة، هندسة، والمزيد.">
+    <meta property="og:image" content="images/adam.jpg">
+    <meta property="og:image:alt" content="آدم عنبوسي مبرمج الموقع أمام حاسوبه">
+    <meta property="og:site_name" content="آدم عنبوسي">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="آدم عنبوسي | عالم الألعاب والتعلّم">
+    <meta name="twitter:description" content="ألعاب تعليمية وترفيهية من برمجة آدم عنبوسي.">
+    <meta name="twitter:image" content="images/adam.jpg">
+    <meta name="twitter:image:alt" content="آدم عنبوسي مبرمج الموقع أمام حاسوبه">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "آدم عنبوسي | عالم الألعاب",
+      "description": "موقع ألعاب تعليمية وترفيهية من برمجة آدم عنبوسي",
+      "inLanguage": "ar",
+      "author": {
+        "@type": "Person",
+        "name": "آدم عنبوسي",
+        "email": "adam.anabusy17@gmail.com",
+        "image": "images/adam.jpg",
+        "jobTitle": "مبرمج الموقع"
+      },
+      "image": "images/adam.jpg"
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
@@ -115,13 +159,25 @@
             overflow: hidden;
         }
 
-        .hero-bg {
+        .hero-photo {
             position: absolute;
             inset: 0;
-            background:
-                linear-gradient(180deg, rgba(12, 42, 58, 0.15) 0%, rgba(12, 42, 58, 0.55) 100%),
-                url("https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=2000&q=80") center/cover no-repeat;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 18%;
             animation: zoomSoft 14s ease-in-out infinite alternate;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(12, 42, 58, 0.2) 0%,
+                rgba(12, 42, 58, 0.45) 45%,
+                rgba(12, 42, 58, 0.78) 100%
+            );
         }
 
         .hero-content {
@@ -284,10 +340,27 @@
             border-block: 1px solid var(--line);
         }
 
+        .about-layout {
+            display: grid;
+            grid-template-columns: minmax(200px, 280px) 1fr;
+            gap: 40px;
+            align-items: center;
+            max-width: 920px;
+        }
+
+        .about-photo {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            object-position: center top;
+            border-radius: 18px;
+            border: 1px solid var(--line);
+            animation: riseIn 0.8s ease both;
+        }
+
         .about-box {
             display: grid;
-            gap: 28px;
-            max-width: 720px;
+            gap: 20px;
         }
 
         .about-box h2 {
@@ -385,6 +458,18 @@
                 text-align: center;
                 justify-content: center;
             }
+
+            .about-layout {
+                grid-template-columns: 1fr;
+                gap: 28px;
+                max-width: 360px;
+                margin-inline: auto;
+            }
+
+            .about-photo {
+                max-width: 280px;
+                margin-inline: auto;
+            }
         }
     </style>
 </head>
@@ -402,7 +487,15 @@
     </header>
 
     <section class="hero">
-        <div class="hero-bg" aria-hidden="true"></div>
+        <img
+            class="hero-photo"
+            src="images/adam.jpg"
+            alt="آدم عنبوسي مبرمج الموقع أمام حاسوبه وهو يبرمج الألعاب"
+            width="1200"
+            height="1600"
+            fetchpriority="high"
+        >
+        <div class="hero-overlay" aria-hidden="true"></div>
         <div class="hero-content">
             <div class="brand-mark">آدم</div>
             <h1>عالم ألعاب وتعلّم بلمسة واحدة</h1>
@@ -601,14 +694,24 @@
     </section>
 
     <section id="about">
-        <div class="about-box">
-            <h2>مبرمج الموقع</h2>
-            <p>
-                أنا <strong>آدم عنبوسي</strong> هو مبرمج الموقع.
-                صمّمت هذه الألعاب والصفحات لأشارككم متعة التعلّم واللعب معاً.
-            </p>
-            <p>للتواصل عبر البريد الإلكتروني:</p>
-            <a class="email" href="mailto:adam.anabusy17@gmail.com">adam.anabusy17@gmail.com</a>
+        <div class="about-layout">
+            <img
+                class="about-photo"
+                src="images/adam.jpg"
+                alt="آدم عنبوسي مبرمج الموقع"
+                width="560"
+                height="750"
+                loading="lazy"
+            >
+            <div class="about-box">
+                <h2>مبرمج الموقع</h2>
+                <p>
+                    أنا <strong>آدم عنبوسي</strong> هو مبرمج الموقع.
+                    صمّمت هذه الألعاب والصفحات لأشارككم متعة التعلّم واللعب معاً.
+                </p>
+                <p>للتواصل عبر البريد الإلكتروني:</p>
+                <a class="email" href="mailto:adam.anabusy17@gmail.com">adam.anabusy17@gmail.com</a>
+            </div>
         </div>
     </section>
 
